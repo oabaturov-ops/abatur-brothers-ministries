@@ -1,65 +1,155 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from 'react';
 
 export default function Home() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-[#0a0a0a] text-white">
+      {/* Навигация */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-[#333]">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+          <div className="text-xl font-bold text-[#d4af37]">
+            ABATUR BROTHERS
+          </div>
+          <div className="hidden md:flex gap-8 items-center">
+            <a href="#home" className="text-gray-300 hover:text-[#d4af37] transition-colors">Главная</a>
+            <a href="#about" className="text-gray-300 hover:text-[#d4af37] transition-colors">О нас</a>
+            <a href="#mission" className="text-gray-300 hover:text-[#d4af37] transition-colors">Миссия</a>
+            <a href="#contacts" className="text-gray-300 hover:text-[#d4af37] transition-colors">Контакты</a>
+            <a href="#contacts" className="bg-[#d4af37] text-black px-5 py-2 rounded-full font-bold hover:bg-[#e6c248] transition-colors">
+              Связаться
+            </a>
+          </div>
+          <button 
+            onClick={() => setMenuOpen(!menuOpen)} 
+            className="md:hidden text-white text-2xl cursor-pointer bg-transparent border-none"
+          >
+            {menuOpen ? '✕' : '☰'}
+          </button>
+        </div>
+        {menuOpen && (
+          <div className="md:hidden flex flex-col gap-4 px-6 pb-6">
+            <a href="#home" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-[#d4af37]">Главная</a>
+            <a href="#about" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-[#d4af37]">О нас</a>
+            <a href="#mission" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-[#d4af37]">Миссия</a>
+            <a href="#contacts" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-[#d4af37]">Контакты</a>
+          </div>
+        )}
+      </nav>
+
+      {/* Hero Section */}
+      <section id="home" className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1a1a2e] to-[#0a0a0a]"></div>
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#d4af37]/10 rounded-full blur-[120px]"></div>
+        <div className="relative text-center max-w-3xl">
+          <div className="text-[#d4af37] text-sm font-bold tracking-[6px] uppercase mb-6">
+            Ministry
+          </div>
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            Abatur Brothers
+            <span className="block text-[#d4af37]">Ministries</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-gray-400 text-lg md:text-xl mb-10 leading-relaxed">
+            Несём свет и надежду в мир. Наша миссия — служить людям,
+            укреплять веру и строить мосты между сердцами.
           </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="#mission" className="bg-[#d4af37] text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-[#e6c248] transition-all hover:scale-105">
+              Наша миссия
+            </a>
+            <a href="#about" className="border-2 border-[#d4af37] text-[#d4af37] px-8 py-4 rounded-full font-bold text-lg hover:bg-[#d4af37] hover:text-black transition-all">
+              Узнать больше
+            </a>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* О нас */}
+      <section id="about" className="py-24 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="text-[#d4af37] text-sm font-bold tracking-[4px] uppercase mb-4">About Us</div>
+            <h2 className="text-4xl font-bold mb-6">О нас</h2>
+            <div className="w-20 h-1 bg-[#d4af37] mx-auto"></div>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { icon: '🙏', title: 'Вера', desc: 'Мы верим в силу единства и любовь, которая объединяет людей независимо от их происхождения.' },
+              { icon: '📖', title: 'Служение', desc: 'Наше служение направлено на поддержку духовного роста и благополучия каждой личности.' },
+              { icon: '🌍', title: 'Единство', desc: 'Мы объединяем людей разных культур и традиций в общую цель служения миру.' },
+            ].map((item, i) => (
+              <div key={i} className="bg-[#111] border border-[#222] rounded-2xl p-8 text-center hover:border-[#d4af37]/50 transition-colors">
+                <div className="text-5xl mb-4">{item.icon}</div>
+                <h3 className="text-xl font-bold text-[#d4af37] mb-3">{item.title}</h3>
+                <p className="text-gray-400 leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* Миссия */}
+      <section id="mission" className="py-24 px-6 bg-[#111]">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="text-[#d4af37] text-sm font-bold tracking-[4px] uppercase mb-4">Our Mission</div>
+          <h2 className="text-4xl font-bold mb-6">Наша миссия</h2>
+          <div className="w-20 h-1 bg-[#d4af37] mx-auto mb-12"></div>
+          <p className="text-gray-400 text-lg leading-relaxed mb-8">
+            Мы призваны нести свет Евангелия, служить сообществу и поддерживать тех,
+            кто нуждается в помощи. Через молитву, служение и любовь мы стремимся
+            изменить мир к лучшему — одно сердце за раз.
+          </p>
+          <div className="grid sm:grid-cols-2 gap-6 mt-12">
+            {[
+              'Еженедельные собрания и молитвы',
+              'Помощь нуждающимся',
+              'Образовательные программы',
+              'Молодёжные инициативы',
+              'Поддержка семей',
+              'Международное сотрудничество',
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-3 text-left bg-[#0a0a0a] border border-[#222] rounded-xl p-4">
+                <div className="w-2 h-2 bg-[#d4af37] rounded-full flex-shrink-0"></div>
+                <span className="text-gray-300">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Контакты */}
+      <section id="contacts" className="py-24 px-6">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="text-[#d4af37] text-sm font-bold tracking-[4px] uppercase mb-4">Contact</div>
+          <h2 className="text-4xl font-bold mb-6">Связаться с нами</h2>
+          <div className="w-20 h-1 bg-[#d4af37] mx-auto mb-12"></div>
+          <p className="text-gray-400 text-lg mb-12">
+            Мы всегда рады услышать от вас. Напишите нам и мы ответим как можно скорее.
+          </p>
+          <div className="grid sm:grid-cols-2 gap-6 mb-12">
+            <div className="bg-[#111] border border-[#222] rounded-2xl p-6">
+              <div className="text-[#d4af37] text-2xl mb-2">📧</div>
+              <p className="text-gray-400 text-sm">Email</p>
+              <p className="text-white font-medium">contact@abaturbrothers.org</p>
+            </div>
+            <div className="bg-[#111] border border-[#222] rounded-2xl p-6">
+              <div className="text-[#d4af37] text-2xl mb-2">📱</div>
+              <p className="text-gray-400 text-sm">Telegram</p>
+              <p className="text-white font-medium">@AbaturBrothers</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-[#222] py-8 px-6">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="text-[#d4af37] font-bold">ABATUR BROTHERS MINISTRIES</div>
+          <div className="text-gray-500 text-sm">© 2026 Все права защищены</div>
+        </div>
+      </footer>
     </div>
   );
 }
