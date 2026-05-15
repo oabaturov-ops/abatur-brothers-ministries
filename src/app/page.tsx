@@ -1,6 +1,65 @@
 "use client";
 
 import { useState } from 'react';
+function ContactForm() {
+  const [form, setForm]: any = useState({});
+  const [sent, setSent] = useState(false);
+
+  function handleChange(e: any) {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }
+
+  async function handleSubmit(e: any) {
+    e.preventDefault();
+    await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    });
+    setSent(true);
+  }
+
+  if (sent) {
+    return (
+      <div className="max-w-lg mx-auto bg-[#111] border border-[#d4af37]/30 rounded-2xl p-10 text-center">
+        <div className="text-5xl mb-4">✝️</div>
+        <h3 className="text-2xl font-bold text-[#d4af37] mb-3">Спасибо!</h3>
+        <p className="text-gray-400">Ваше сообщение получено. Мы свяжемся с вами в ближайшее время.</p>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="max-w-lg mx-auto flex flex-col gap-5">
+      <div className="grid sm:grid-cols-2 gap-5">
+        <input name="name" placeholder="Ваше имя" onChange={handleChange} required
+          className="bg-[#111] border border-[#333] rounded-xl px-5 py-4 text-white placeholder-gray-500 focus:border-[#d4af37] outline-none transition-colors" />
+        <input name="email" type="email" placeholder="Email" onChange={handleChange} required
+          className="bg-[#111] border border-[#333] rounded-xl px-5 py-4 text-white placeholder-gray-500 focus:border-[#d4af37] outline-none transition-colors" />
+      </div>
+      <input name="subject" placeholder="Тема" onChange={handleChange} required
+        className="bg-[#111] border border-[#333] rounded-xl px-5 py-4 text-white placeholder-gray-500 focus:border-[#d4af37] outline-none transition-colors" />
+      <textarea name="message" placeholder="Ваше сообщение" onChange={handleChange} required rows={5}
+        className="bg-[#111] border border-[#333] rounded-xl px-5 py-4 text-white placeholder-gray-500 focus:border-[#d4af37] outline-none transition-colors resize-none"></textarea>
+      <button type="submit"
+        className="bg-[#d4af37] text-black px-8 py-4 rounded-xl font-bold text-lg hover:bg-[#e6c248] transition-all hover:scale-[1.02] cursor-pointer border-none">
+        Отправить сообщение
+      </button>
+      <div className="grid sm:grid-cols-2 gap-4 mt-4">
+        <div className="bg-[#111] border border-[#222] rounded-xl p-5 text-center">
+          <div className="text-[#d4af37] text-xl mb-1">📧</div>
+          <p className="text-gray-400 text-sm">Email</p>
+          <p className="text-white font-medium text-sm">contact@abaturbrothers.org</p>
+        </div>
+        <div className="bg-[#111] border border-[#222] rounded-xl p-5 text-center">
+          <div className="text-[#d4af37] text-xl mb-1">📱</div>
+          <p className="text-gray-400 text-sm">Telegram</p>
+          <p className="text-white font-medium text-sm">@AbaturBrothers</p>
+        </div>
+      </div>
+    </form>
+  );
+}
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -119,28 +178,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Контакты */}
+            {/* Контакты */}
       <section id="contacts" className="py-24 px-6">
         <div className="max-w-2xl mx-auto text-center">
           <div className="text-[#d4af37] text-sm font-bold tracking-[4px] uppercase mb-4">Contact</div>
           <h2 className="text-4xl font-bold mb-6">Связаться с нами</h2>
           <div className="w-20 h-1 bg-[#d4af37] mx-auto mb-12"></div>
-          <p className="text-gray-400 text-lg mb-12">
-            Мы всегда рады услышать от вас. Напишите нам и мы ответим как можно скорее.
-          </p>
-          <div className="grid sm:grid-cols-2 gap-6 mb-12">
-            <div className="bg-[#111] border border-[#222] rounded-2xl p-6">
-              <div className="text-[#d4af37] text-2xl mb-2">📧</div>
-              <p className="text-gray-400 text-sm">Email</p>
-              <p className="text-white font-medium">contact@abaturbrothers.org</p>
-            </div>
-            <div className="bg-[#111] border border-[#222] rounded-2xl p-6">
-              <div className="text-[#d4af37] text-2xl mb-2">📱</div>
-              <p className="text-gray-400 text-sm">Telegram</p>
-              <p className="text-white font-medium">@AbaturBrothers</p>
-            </div>
-          </div>
         </div>
+        <ContactForm />
       </section>
 
       {/* Footer */}
