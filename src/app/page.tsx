@@ -270,7 +270,44 @@ export default function Home() {
           </div>
         </div>
       </section>
-
+      {/* Отзывы */}
+      <section className="py-24 px-6 bg-[#111]">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="text-[#d4af37] text-sm font-bold tracking-[4px] uppercase mb-4">Testimonials</div>
+            <h2 className="text-4xl font-bold mb-6">Что говорят о нас</h2>
+            <div className="w-20 h-1 bg-[#d4af37] mx-auto"></div>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                text: 'Благодаря этому служению моя жизнь изменилась. Я нашёл веру, друзей и цель. Благодарю Бога за братьев Абатур!',
+                name: 'Алексей',
+                city: 'Москва',
+              },
+              {
+                text: 'Молодёжные конференции — это невероятная атмосфера. Здесь чувствуешь настоящую любовь и поддержку.',
+                name: 'Мария',
+                city: 'Санкт-Петербург',
+              },
+              {
+                text: 'Каждое собрание наполнено светом и надеждой. Это место, куда хочется возвращаться снова и снова.',
+                name: 'Дмитрий',
+                city: 'Казань',
+              },
+            ].map((review, i) => (
+              <div key={i} className="bg-[#0a0a0a] border border-[#222] rounded-2xl p-8 hover:border-[#d4af37]/30 transition-colors">
+                <div className="text-[#d4af37] text-3xl mb-4">&ldquo;</div>
+                <p className="text-gray-300 leading-relaxed mb-6">{review.text}</p>
+                <div className="border-t border-[#222] pt-4">
+                  <div className="font-bold">{review.name}</div>
+                  <div className="text-gray-500 text-sm">{review.city}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
             {/* Контакты */}
       <section id="contacts" className="py-24 px-6">
         <div className="max-w-2xl mx-auto text-center">
