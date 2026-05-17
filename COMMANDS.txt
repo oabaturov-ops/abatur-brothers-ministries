@@ -1,0 +1,26 @@
+=== КОМАНДЫ GIT ===
+git init                          — создать репозиторий
+git add -A                        — добавить все файлы
+git commit -m "описание"          — сохранить коммит
+git push                          — отправить на GitHub
+git pull                          — подтянуть изменения
+git status                        — проверить статус
+
+=== КОМАНДЫ NEXT.JS ===
+npm run dev                       — запуск сайта на localhost:3000
+npm run build                     — проверить сборку (ошибки TypeScript)
+Ctrl+C                            — остановить сервер
+code .                            — открыть VS Code в текущей папке
+
+=== УПРАВЛЕНИЕ ПАПКАМИ (PowerShell) ===
+cd C:\папка                       — перейти в папку
+dir                               — содержимое папки
+mkdir имя                         — создать папку
+Remove-Item -Recurse -Force имя   — удалить папку
+
+=== НОВЫЙ КОМПЬЮТЕР ===
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+git clone https://github.com/oabaturov-ops/имя.git
+cd имя
+npm install
+npm run dev

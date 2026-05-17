@@ -148,7 +148,100 @@ export default function Home() {
           </div>
         </div>
       </section>
-
+      {/* События */}
+      <section className="py-24 px-6 bg-[#111]">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="text-[#d4af37] text-sm font-bold tracking-[4px] uppercase mb-4">Events</div>
+            <h2 className="text-4xl font-bold mb-6">Ближайшие события</h2>
+            <div className="w-20 h-1 bg-[#d4af37] mx-auto"></div>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                date: '21',
+                month: 'ИЮН',
+                title: 'Вечер молитвы',
+                desc: 'Еженедельное молитвенное собрание для всех желающих.',
+                time: '19:00',
+                tag: 'Каждую неделю',
+              },
+              {
+                date: '05',
+                month: 'ИЮЛ',
+                title: 'Молодёжная конференция',
+                desc: 'Конференция для молодёжи с музыкой, выступлениями и общением.',
+                time: '10:00 - 18:00',
+                tag: 'Конференция',
+              },
+              {
+                date: '12',
+                month: 'ИЮЛ',
+                title: 'Благотворительный концерт',
+                desc: 'Музыкальный вечер в поддержку нуждающихся семей.',
+                time: '18:00',
+                tag: 'Благотворительность',
+              },
+            ].map((event, i) => (
+              <div key={i} className="bg-[#0a0a0a] border border-[#222] rounded-2xl overflow-hidden hover:border-[#d4af37]/30 transition-colors group">
+                <div className="bg-[#d4af37]/10 p-6 flex items-center gap-4 group-hover:bg-[#d4af37]/20 transition-colors">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-[#d4af37]">{event.date}</div>
+                    <div className="text-[#d4af37] text-xs font-bold tracking-wider">{event.month}</div>
+                  </div>
+                  <div>
+                    <span className="bg-[#d4af37]/20 text-[#d4af37] text-xs font-bold px-3 py-1 rounded-full">{event.tag}</span>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold mb-2">{event.title}</h3>
+                  <p className="text-gray-400 text-sm mb-4 leading-relaxed">{event.desc}</p>
+                  <div className="text-gray-500 text-sm flex items-center gap-2">
+                    <span>🕐</span> {event.time}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+            {/* Наша команда */}
+      <section className="py-24 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="text-[#d4af37] text-sm font-bold tracking-[4px] uppercase mb-4">Our Team</div>
+            <h2 className="text-4xl font-bold mb-6">Наша команда</h2>
+            <div className="w-20 h-1 bg-[#d4af37] mx-auto"></div>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8">
+            {[
+              {
+                name: 'Олег Абатуров',
+                role: 'Основатель',
+                desc: 'Призван нести Евангелие. Толкование снов. Более 30 лет в служении.',
+                initial: 'ОА',
+              },
+              {
+                name: 'Всеволод Абатуров',
+                role: 'Основатель',
+                desc: 'Призван нести Евангелие. Учить Слову Божию. Более 30 лет в служении.',
+                initial: 'ВА',
+              },
+            ].map((member, i) => (
+              <div key={i} className="bg-[#111] border border-[#222] rounded-2xl p-8 flex gap-6 items-start hover:border-[#d4af37]/30 transition-colors">
+                <div className="w-16 h-16 bg-[#d4af37]/20 rounded-full flex items-center justify-center text-[#d4af37] font-bold text-xl flex-shrink-0">
+                  {member.initial}
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-1">{member.name}</h3>
+                  <p className="text-[#d4af37] text-sm font-bold mb-3">{member.role}</p>
+                  <p className="text-gray-400 leading-relaxed text-sm">{member.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
       {/* Миссия */}
       <section id="mission" className="py-24 px-6 bg-[#111]">
         <div className="max-w-4xl mx-auto text-center">
@@ -187,7 +280,24 @@ export default function Home() {
         </div>
         <ContactForm />
       </section>
-
+      {/* Писание дня */}
+      <section className="py-20 px-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-gradient-to-br from-[#1a1a2e] to-[#111] border border-[#d4af37]/20 rounded-2xl p-10 md:p-14 text-center relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-[#d4af37]/5 rounded-full blur-[60px]"></div>
+            <div className="text-[#d4af37] text-sm font-bold tracking-[4px] uppercase mb-6">Daily Scripture</div>
+            <blockquote className="text-2xl md:text-3xl text-gray-200 leading-relaxed mb-6 italic">
+              &ldquo;Ибо Я знаю мысли, какие думаю о вас, говорит Господь,
+              мысли о мире, а не о зле, чтобы дать вам будущее и надежду.&rdquo;
+            </blockquote>
+            <div className="text-[#d4af37] font-bold text-lg mb-2">Иеремия 29:11</div>
+            <div className="w-12 h-[2px] bg-[#d4af37]/50 mx-auto my-6"></div>
+            <p className="text-gray-500 text-sm">
+              Каждый день — новая надежда и новая возможность служить.
+            </p>
+          </div>
+        </div>
+      </section>
       {/* Footer */}
       <footer className="border-t border-[#222] py-8 px-6">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
