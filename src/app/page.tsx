@@ -1,347 +1,563 @@
 "use client";
 
-import { useState } from 'react';
-function ContactForm() {
-  const [form, setForm]: any = useState({});
-  const [sent, setSent] = useState(false);
-
-  function handleChange(e: any) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
-
-  async function handleSubmit(e: any) {
-    e.preventDefault();
-    await fetch('/api/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
-    setSent(true);
-  }
-
-  if (sent) {
-    return (
-      <div className="max-w-lg mx-auto bg-[#111] border border-[#d4af37]/30 rounded-2xl p-10 text-center">
-        <div className="text-5xl mb-4">✝️</div>
-        <h3 className="text-2xl font-bold text-[#d4af37] mb-3">Спасибо!</h3>
-        <p className="text-gray-400">Ваше сообщение получено. Мы свяжемся с вами в ближайшее время.</p>
-      </div>
-    );
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto flex flex-col gap-5">
-      <div className="grid sm:grid-cols-2 gap-5">
-        <input name="name" placeholder="Ваше имя" onChange={handleChange} required
-          className="bg-[#111] border border-[#333] rounded-xl px-5 py-4 text-white placeholder-gray-500 focus:border-[#d4af37] outline-none transition-colors" />
-        <input name="email" type="email" placeholder="Email" onChange={handleChange} required
-          className="bg-[#111] border border-[#333] rounded-xl px-5 py-4 text-white placeholder-gray-500 focus:border-[#d4af37] outline-none transition-colors" />
-      </div>
-      <input name="subject" placeholder="Тема" onChange={handleChange} required
-        className="bg-[#111] border border-[#333] rounded-xl px-5 py-4 text-white placeholder-gray-500 focus:border-[#d4af37] outline-none transition-colors" />
-      <textarea name="message" placeholder="Ваше сообщение" onChange={handleChange} required rows={5}
-        className="bg-[#111] border border-[#333] rounded-xl px-5 py-4 text-white placeholder-gray-500 focus:border-[#d4af37] outline-none transition-colors resize-none"></textarea>
-      <button type="submit"
-        className="bg-[#d4af37] text-black px-8 py-4 rounded-xl font-bold text-lg hover:bg-[#e6c248] transition-all hover:scale-[1.02] cursor-pointer border-none">
-        Отправить сообщение
-      </button>
-      <div className="grid sm:grid-cols-2 gap-4 mt-4">
-        <div className="bg-[#111] border border-[#222] rounded-xl p-5 text-center">
-          <div className="text-[#d4af37] text-xl mb-1">📧</div>
-          <p className="text-gray-400 text-sm">Email</p>
-          <p className="text-white font-medium text-sm">contact@abaturbrothers.org</p>
-        </div>
-        <div className="bg-[#111] border border-[#222] rounded-xl p-5 text-center">
-          <div className="text-[#d4af37] text-xl mb-1">📱</div>
-          <p className="text-gray-400 text-sm">Telegram</p>
-          <p className="text-white font-medium text-sm">@AbaturBrothers</p>
-        </div>
-      </div>
-    </form>
-  );
-}
+import { useState } from "react";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export default function Home() {
+  const { lang, setLang, t } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [selectedChannel, setSelectedChannel] = useState("whatsapp");
+
+  // Комментарии
+  const [comments, setComments] = useState<any[]>([
+    { id: 1, name: "Олег", text: "Благословеннослужение! Бог благословит вашу работу.", date: "2025-01-15" },
+    { id: 2, name: "Maria", text: "Wonderful ministry! God bless your work.", date: "2025-01-14" },
+  ]);
+  const [commentName, setCommentName] = useState("");
+  const [commentText, setCommentText] = useState("");
+
+  // Чат-виджет
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatName, setChatName] = useState("");
+  const [chatMsg, setChatMsg] = useState("");
+  const [chatStatus, setChatStatus] = useState("idle");
+
+  const navLinks = [
+    { href: "#about", label: t.nav.about },
+    { href: "#events", label: t.nav.events },
+    { href: "#team", label: t.nav.team },
+    { href: "#mission", label: t.nav.mission },
+    { href: "#contacts", label: t.nav.contacts },
+    { href: "#comments", label: t.nav.comments },
+  ];
+
+  function addComment() {
+    if (!commentName.trim() || !commentText.trim()) return;
+    const newComment = {
+      id: Date.now(),
+      name: commentName,
+      text: commentText,
+      date: new Date().toISOString().slice(0, 10),
+    };
+    setComments([newComment, ...comments]);
+    setCommentName("");
+    setCommentText("");
+  }
+
+  function deleteComment(id: number) {
+    setComments(comments.filter((c: any) => c.id !== id));
+  }
+
+  async function sendChatMessage() {
+    if (!chatName.trim() || !chatMsg.trim()) return;
+    setChatStatus("sending");
+    try {
+      const res = await fetch("/api/telegram", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: chatName, message: chatMsg }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setChatStatus("sent");
+        setChatMsg("");
+      } else {
+        setChatStatus("error");
+      }
+    } catch {
+      setChatStatus("error");
+    }
+    setTimeout(() => setChatStatus("idle"), 3000);
+  }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
-      {/* Навигация */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-[#333]">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="text-xl font-bold text-[#d4af37]">
-            ABATUR BROTHERS
-          </div>
-          <div className="hidden md:flex gap-8 items-center">
-            <a href="#home" className="text-gray-300 hover:text-[#d4af37] transition-colors">Главная</a>
-            <a href="#about" className="text-gray-300 hover:text-[#d4af37] transition-colors">О нас</a>
-            <a href="#mission" className="text-gray-300 hover:text-[#d4af37] transition-colors">Миссия</a>
-            <a href="#contacts" className="text-gray-300 hover:text-[#d4af37] transition-colors">Контакты</a>
-            <a href="#contacts" className="bg-[#d4af37] text-black px-5 py-2 rounded-full font-bold hover:bg-[#e6c248] transition-colors">
-              Связаться
+    <div style={{ backgroundColor: "#0a0a0a", color: "#fff", minHeight: "100vh" }}>
+      {/* NAVIGATION */}
+      <nav style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
+        backgroundColor: "rgba(10,10,10,0.9)", backdropFilter: "blur(10px)",
+        borderBottom: "1px solid #222", padding: "15px 30px",
+        display: "flex", justifyContent: "space-between", alignItems: "center"
+      }}>
+        <a href="#" style={{ color: "#d4af37", fontSize: 20, fontWeight: "bold", textDecoration: "none" }}>
+          {t.nav.brand}
+        </a>
+
+        {/* Desktop menu */}
+        <div style={{ display: "flex", gap: 25, alignItems: "center" }}>
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              style={{ color: "#ccc", textDecoration: "none", fontSize: 14, transition: "color 0.3s" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#d4af37")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#ccc")}
+            >
+              {link.label}
             </a>
-          </div>
-          <button 
-            onClick={() => setMenuOpen(!menuOpen)} 
-            className="md:hidden text-white text-2xl cursor-pointer bg-transparent border-none"
+          ))}
+
+          {/* Language Toggle */}
+          <button
+            onClick={() => setLang(lang === "ru" ? "en" : "ru")}
+            style={{
+              padding: "6px 14px", backgroundColor: "#111", border: "1px solid #d4af37",
+              borderRadius: 6, color: "#d4af37", fontSize: 13, fontWeight: "bold",
+              cursor: "pointer", transition: "0.3s"
+            }}
           >
-            {menuOpen ? '✕' : '☰'}
+            {lang === "ru" ? "EN" : "RU"}
           </button>
         </div>
-        {menuOpen && (
-          <div className="md:hidden flex flex-col gap-4 px-6 pb-6">
-            <a href="#home" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-[#d4af37]">Главная</a>
-            <a href="#about" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-[#d4af37]">О нас</a>
-            <a href="#mission" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-[#d4af37]">Миссия</a>
-            <a href="#contacts" onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-[#d4af37]">Контакты</a>
-          </div>
-        )}
+
+        {/* Burger */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          style={{
+            display: "none", backgroundColor: "transparent", border: "none",
+            cursor: "pointer", padding: "5px"
+          }}
+          className="burger-btn"
+        >
+          <div style={{ width: 25, height: 2, backgroundColor: "#d4af37", marginBottom: 5, transition: "0.3s" }} />
+          <div style={{ width: 25, height: 2, backgroundColor: "#d4af37", marginBottom: 5, transition: "0.3s" }} />
+          <div style={{ width: 25, height: 2, backgroundColor: "#d4af37", transition: "0.3s" }} />
+        </button>
       </nav>
 
-      {/* Hero Section */}
-      <section id="home" className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1a1a2e] to-[#0a0a0a]"></div>
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#d4af37]/10 rounded-full blur-[120px]"></div>
-        <div className="relative text-center max-w-3xl">
-          <div className="text-[#d4af37] text-sm font-bold tracking-[6px] uppercase mb-6">
-            Ministry
-          </div>
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            Abatur Brothers
-            <span className="block text-[#d4af37]">Ministries</span>
-          </h1>
-          <p className="text-gray-400 text-lg md:text-xl mb-10 leading-relaxed">
-            Несём свет и надежду в мир. Наша миссия — служить людям,
-            укреплять веру и строить мосты между сердцами.
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div style={{
+          position: "fixed", top: 60, left: 0, right: 0, zIndex: 40,
+          backgroundColor: "rgba(10,10,10,0.98)", borderBottom: "1px solid #222",
+          padding: "20px 30px", display: "flex", flexDirection: "column", gap: 15
+        }}>
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              onClick={() => setMenuOpen(false)}
+              style={{ color: "#ccc", textDecoration: "none", fontSize: 16 }}
+            >
+              {link.label}
+            </a>
+          ))}
+          <button
+            onClick={() => { setLang(lang === "ru" ? "en" : "ru"); setMenuOpen(false); }}
+            style={{
+              padding: "10px", backgroundColor: "#111", border: "1px solid #d4af37",
+              borderRadius: 6, color: "#d4af37", fontSize: 14, fontWeight: "bold",
+              cursor: "pointer", marginTop: 5
+            }}
+          >
+            {lang === "ru" ? "EN English" : "RU Русский"}
+          </button>
+        </div>
+      )}
+
+      {/* HERO */}
+      <section style={{
+        minHeight: "100vh", display: "flex", flexDirection: "column",
+        justifyContent: "center", alignItems: "center", textAlign: "center",
+        padding: "20px", position: "relative", overflow: "hidden",
+        background: "radial-gradient(circle at 50% 50%, #1a1a0a 0%, #0a0a0a 70%)"
+      }}>
+        <div style={{
+          position: "absolute", width: 400, height: 400, borderRadius: "50%",
+          background: "#d4af37", filter: "blur(150px)", opacity: 0.15, top: "20%", left: "50%", transform: "translateX(-50%)"
+        }} />
+        <h1 style={{ fontSize: "clamp(2rem, 6vw, 4rem)", fontWeight: "bold", marginBottom: 20, position: "relative" }}>
+          {t.hero.title1} <span style={{ color: "#d4af37" }}>{t.hero.titleHighlight}</span>
+        </h1>
+        <p style={{ fontSize: "clamp(1rem, 2vw, 1.3rem)", color: "#aaa", maxWidth: 600, marginBottom: 40, position: "relative" }}>
+          {t.hero.subtitle}
+        </p>
+        <div style={{ display: "flex", gap: 15, flexWrap: "wrap", justifyContent: "center", position: "relative" }}>
+          <a href="#about" style={{
+            padding: "14px 30px", backgroundColor: "#d4af37", color: "#000",
+            textDecoration: "none", fontWeight: "bold", borderRadius: 8, transition: "0.3s"
+          }}>{t.hero.cta1}</a>
+          <a href="#contacts" style={{
+            padding: "14px 30px", border: "1px solid #d4af37", color: "#d4af37",
+            textDecoration: "none", borderRadius: 8, transition: "0.3s"
+          }}>{t.hero.cta2}</a>
+        </div>
+      </section>
+
+      {/* ABOUT */}
+      <section id="about" style={{ padding: "80px 20px", maxWidth: 1000, margin: "0 auto" }}>
+        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 50 }}>{t.about.heading}</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 25 }}>
+          {[
+            { title: t.about.faith.title, text: t.about.faith.text, icon: "✝️" },
+            { title: t.about.ministry.title, text: t.about.ministry.text, icon: "🕊️" },
+            { title: t.about.unity.title, text: t.about.unity.text, icon: "🤝" },
+          ].map((item) => (
+            <div key={item.title} style={{
+              backgroundColor: "#111", border: "1px solid #222", borderRadius: 12,
+              padding: "30px", textAlign: "center"
+            }}>
+              <div style={{ fontSize: 40, marginBottom: 15 }}>{item.icon}</div>
+              <h3 style={{ color: "#d4af37", marginBottom: 10 }}>{item.title}</h3>
+              <p style={{ color: "#999", lineHeight: 1.6 }}>{item.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* EVENTS */}
+      <section id="events" style={{ padding: "80px 20px", backgroundColor: "#0d0d0d" }}>
+        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 50 }}>{t.events.heading}</h2>
+        <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 25 }}>
+          {t.events.items.map((event: any) => (
+            <div key={event.title} style={{
+              backgroundColor: "#111", border: "1px solid #222", borderRadius: 12, padding: "25px"
+            }}>
+              <span style={{ color: "#d4af37", fontSize: 13, fontWeight: "bold" }}>{event.date}</span>
+              <h3 style={{ marginTop: 10, marginBottom: 8 }}>{event.title}</h3>
+              <span style={{
+                fontSize: 12, padding: "4px 10px", backgroundColor: "#1a1a1a",
+                borderRadius: 20, color: "#888", border: "1px solid #333"
+              }}>{event.tag}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* TEAM */}
+      <section id="team" style={{ padding: "80px 20px", maxWidth: 1000, margin: "0 auto" }}>
+        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 50 }}>{t.team.heading}</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 25 }}>
+          {t.team.members.map((member: any) => (
+            <div key={member.name} style={{
+              backgroundColor: "#111", border: "1px solid #222", borderRadius: 12,
+              padding: "30px", textAlign: "center"
+            }}>
+              <div style={{
+                width: 80, height: 80, borderRadius: "50%", backgroundColor: "#1a1a0a",
+                border: "2px solid #d4af37", margin: "0 auto 15px",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 24, color: "#d4af37", fontWeight: "bold"
+              }}>
+                {member.name.split(" ").map((n: string) => n[0]).join("")}
+              </div>
+              <h3 style={{ color: "#d4af37", marginBottom: 5 }}>{member.name}</h3>
+              <p style={{ color: "#888", fontSize: 13, marginBottom: 10 }}>{member.role}</p>
+              <p style={{ color: "#aaa", fontSize: 14, lineHeight: 1.6 }}>{member.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* MISSION */}
+      <section id="mission" style={{ padding: "80px 20px", backgroundColor: "#0d0d0d" }}>
+        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 50 }}>{t.mission.heading}</h2>
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+          <p style={{ color: "#ccc", lineHeight: 1.8, textAlign: "center", marginBottom: 30 }}>
+            {t.mission.text}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="#mission" className="bg-[#d4af37] text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-[#e6c248] transition-all hover:scale-105">
-              Наша миссия
-            </a>
-            <a href="#about" className="border-2 border-[#d4af37] text-[#d4af37] px-8 py-4 rounded-full font-bold text-lg hover:bg-[#d4af37] hover:text-black transition-all">
-              Узнать больше
-            </a>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 15 }}>
+            {t.mission.items.map((item: any) => (
+              <div key={item} style={{
+                padding: "15px", backgroundColor: "#111", border: "1px solid #222",
+                borderRadius: 8, color: "#ccc", fontSize: 14
+              }}>
+                ✦ {item}
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* О нас */}
-      <section id="about" className="py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="text-[#d4af37] text-sm font-bold tracking-[4px] uppercase mb-4">About Us</div>
-            <h2 className="text-4xl font-bold mb-6">О нас</h2>
-            <div className="w-20 h-1 bg-[#d4af37] mx-auto"></div>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
+      {/* CONTACTS */}
+      <section id="contacts" style={{ padding: "80px 20px", maxWidth: 800, margin: "0 auto" }}>
+        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 15 }}>{t.contacts.heading}</h2>
+        <p style={{ textAlign: "center", color: "#888", marginBottom: 40 }}>
+          {t.contacts.subtitle}
+        </p>
+
+        <form
+          onSubmit={(e: any) => {
+            e.preventDefault();
+            const name = (e.target as any).elements.cname.value;
+            const email = (e.target as any).elements.cemail.value;
+            const message = (e.target as any).elements.cmessage.value;
+            const text = `Name: ${name}\nEmail: ${email}\n\n${message}`;
+
+            const WHATSAPP_NUMBER = "15551234567";
+            const TELEGRAM_USER = "Abaturministry_bot";
+            const EMAIL_ADDRESS = "info@abaturministries.org";
+            const FACEBOOK_PAGE = "AbaturBrothersMinistries";
+
+            const links: any = {
+              whatsapp: `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`,
+              telegram: `https://t.me/${TELEGRAM_USER}?text=${encodeURIComponent(text)}`,
+              email: `mailto:${EMAIL_ADDRESS}?subject=Message from website&body=${encodeURIComponent(text)}`,
+              facebook: `https://m.me/${FACEBOOK_PAGE}`,
+            };
+
+            window.open(links[selectedChannel], "_blank");
+          }}
+          style={{ display: "flex", flexDirection: "column", gap: 15 }}
+        >
+          <input name="cname" type="text" placeholder={t.contacts.namePlaceholder} required style={{
+            padding: "12px 15px", backgroundColor: "#111", border: "1px solid #333",
+            borderRadius: 8, color: "#fff", fontSize: 14, outline: "none"
+          }} />
+          <input name="cemail" type="email" placeholder={t.contacts.emailPlaceholder} required style={{
+            padding: "12px 15px", backgroundColor: "#111", border: "1px solid #333",
+            borderRadius: 8, color: "#fff", fontSize: 14, outline: "none"
+          }} />
+          <textarea name="cmessage" placeholder={t.contacts.messagePlaceholder} required rows={4} style={{
+            padding: "12px 15px", backgroundColor: "#111", border: "1px solid #333",
+            borderRadius: 8, color: "#fff", fontSize: 14, outline: "none", resize: "vertical"
+          }} />
+
+          <p style={{ color: "#888", fontSize: 13, margin: "5px 0 0" }}>{t.contacts.chooseChannel}</p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
             {[
-              { icon: '🙏', title: 'Вера', desc: 'Мы верим в силу единства и любовь, которая объединяет людей независимо от их происхождения.' },
-              { icon: '📖', title: 'Служение', desc: 'Наше служение направлено на поддержку духовного роста и благополучия каждой личности.' },
-              { icon: '🌍', title: 'Единство', desc: 'Мы объединяем людей разных культур и традиций в общую цель служения миру.' },
-            ].map((item, i) => (
-              <div key={i} className="bg-[#111] border border-[#222] rounded-2xl p-8 text-center hover:border-[#d4af37]/50 transition-colors">
-                <div className="text-5xl mb-4">{item.icon}</div>
-                <h3 className="text-xl font-bold text-[#d4af37] mb-3">{item.title}</h3>
-                <p className="text-gray-400 leading-relaxed">{item.desc}</p>
-              </div>
+              { key: "whatsapp", label: t.contacts.channels.whatsapp, icon: "📱", color: "#25D366" },
+              { key: "telegram", label: t.contacts.channels.telegram, icon: "💬", color: "#0088cc" },
+              { key: "email", label: t.contacts.channels.email, icon: "📧", color: "#d4af37" },
+              { key: "facebook", label: t.contacts.channels.facebook, icon: "📘", color: "#1877F2" },
+            ].map((btn: any) => (
+              <button
+                key={btn.key}
+                type="button"
+                onClick={() => setSelectedChannel(btn.key)}
+                style={{
+                  padding: "14px 10px", border: selectedChannel === btn.key
+                    ? `2px solid ${btn.color}`
+                    : "1px solid #333",
+                  borderRadius: 8, backgroundColor: selectedChannel === btn.key
+                    ? `${btn.color}15`
+                    : "#111",
+                  color: "#ccc", fontSize: 14, cursor: "pointer",
+                  transition: "0.3s", display: "flex", alignItems: "center",
+                  justifyContent: "center", gap: 8
+                }}
+              >
+                <span>{btn.icon}</span> {btn.label}
+              </button>
             ))}
           </div>
+
+          <button type="submit" style={{
+            padding: "14px", backgroundColor: "#d4af37", color: "#000",
+            border: "none", borderRadius: 8, fontWeight: "bold", fontSize: 15,
+            cursor: "pointer", transition: "0.3s", marginTop: 5
+          }}>
+            {t.contacts.sendVia} {t.contacts.channels[selectedChannel as keyof typeof t.contacts.channels]}
+          </button>
+        </form>
+
+        <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12 }}>
+          {[
+            { label: t.contacts.info[0].label, value: t.contacts.info[0].value, icon: "📱", color: "#25D366", link: "https://wa.me/15551234567" },
+            { label: t.contacts.info[1].label, value: t.contacts.info[1].value, icon: "💬", color: "#0088cc", link: "https://t.me/Abaturministry_bot" },
+            { label: t.contacts.info[2].label, value: t.contacts.info[2].value, icon: "📧", color: "#d4af37", link: "mailto:info@abaturministries.org" },
+            { label: t.contacts.info[3].label, value: t.contacts.info[3].value, icon: "📘", color: "#1877F2", link: "https://m.me/AbaturBrothersMinistries" },
+          ].map((contact) => (
+            <a
+              key={contact.label}
+              href={contact.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                padding: "18px", backgroundColor: "#111", border: `1px solid ${contact.color}33`,
+                borderRadius: 10, display: "flex", alignItems: "center", gap: 12, textDecoration: "none"
+              }}
+            >
+              <span style={{ fontSize: 28 }}>{contact.icon}</span>
+              <div>
+                <div style={{ color: contact.color, fontSize: 12, fontWeight: "bold" }}>{contact.label}</div>
+                <div style={{ color: "#999", fontSize: 12 }}>{contact.value}</div>
+              </div>
+            </a>
+          ))}
         </div>
       </section>
-      {/* События */}
-      <section className="py-24 px-6 bg-[#111]">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="text-[#d4af37] text-sm font-bold tracking-[4px] uppercase mb-4">Events</div>
-            <h2 className="text-4xl font-bold mb-6">Ближайшие события</h2>
-            <div className="w-20 h-1 bg-[#d4af37] mx-auto"></div>
+
+      {/* COMMENTS */}
+      <section id="comments" style={{ padding: "80px 20px", backgroundColor: "#0d0d0d" }}>
+        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 15 }}>{t.comments.heading}</h2>
+        <p style={{ textAlign: "center", color: "#888", marginBottom: 40 }}>{t.comments.subtitle}</p>
+
+        <div style={{ maxWidth: 600, margin: "0 auto" }}>
+          {/* Add comment form */}
+          <div style={{
+            backgroundColor: "#111", border: "1px solid #222", borderRadius: 12,
+            padding: "20px", marginBottom: 30
+          }}>
+            <input
+              type="text"
+              placeholder={t.comments.namePlaceholder}
+              value={commentName}
+              onChange={(e: any) => setCommentName(e.target.value)}
+              style={{
+                width: "100%", padding: "10px 14px", backgroundColor: "#0a0a0a",
+                border: "1px solid #333", borderRadius: 6, color: "#fff",
+                fontSize: 14, outline: "none", marginBottom: 10
+              }}
+            />
+            <textarea
+              placeholder={t.comments.commentPlaceholder}
+              value={commentText}
+              onChange={(e: any) => setCommentText(e.target.value)}
+              rows={3}
+              style={{
+                width: "100%", padding: "10px 14px", backgroundColor: "#0a0a0a",
+                border: "1px solid #333", borderRadius: 6, color: "#fff",
+                fontSize: 14, outline: "none", marginBottom: 10, resize: "vertical"
+              }}
+            />
+            <button
+              onClick={addComment}
+              style={{
+                width: "100%", padding: "12px", backgroundColor: "#d4af37",
+                color: "#000", border: "none", borderRadius: 6, fontWeight: "bold",
+                fontSize: 14, cursor: "pointer"
+              }}
+            >
+              {t.comments.submit}
+            </button>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                date: '21',
-                month: 'ИЮН',
-                title: 'Вечер молитвы',
-                desc: 'Еженедельное молитвенное собрание для всех желающих.',
-                time: '19:00',
-                tag: 'Каждую неделю',
-              },
-              {
-                date: '05',
-                month: 'ИЮЛ',
-                title: 'Молодёжная конференция',
-                desc: 'Конференция для молодёжи с музыкой, выступлениями и общением.',
-                time: '10:00 - 18:00',
-                tag: 'Конференция',
-              },
-              {
-                date: '12',
-                month: 'ИЮЛ',
-                title: 'Благотворительный концерт',
-                desc: 'Музыкальный вечер в поддержку нуждающихся семей.',
-                time: '18:00',
-                tag: 'Благотворительность',
-              },
-            ].map((event, i) => (
-              <div key={i} className="bg-[#0a0a0a] border border-[#222] rounded-2xl overflow-hidden hover:border-[#d4af37]/30 transition-colors group">
-                <div className="bg-[#d4af37]/10 p-6 flex items-center gap-4 group-hover:bg-[#d4af37]/20 transition-colors">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-[#d4af37]">{event.date}</div>
-                    <div className="text-[#d4af37] text-xs font-bold tracking-wider">{event.month}</div>
-                  </div>
+
+          {/* Comments list */}
+          {comments.length === 0 ? (
+            <p style={{ textAlign: "center", color: "#555" }}>{t.comments.noComments}</p>
+          ) : (
+            comments.map((c: any) => (
+              <div key={c.id} style={{
+                backgroundColor: "#111", border: "1px solid #222", borderRadius: 10,
+                padding: "18px", marginBottom: 12
+              }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                   <div>
-                    <span className="bg-[#d4af37]/20 text-[#d4af37] text-xs font-bold px-3 py-1 rounded-full">{event.tag}</span>
+                    <span style={{ color: "#d4af37", fontWeight: "bold", fontSize: 14 }}>{c.name}</span>
+                    <span style={{ color: "#555", fontSize: 12, marginLeft: 10 }}>{c.date}</span>
                   </div>
+                  <button
+                    onClick={() => deleteComment(c.id)}
+                    style={{
+                      padding: "4px 10px", backgroundColor: "#1a1a1a", border: "1px solid #333",
+                      borderRadius: 4, color: "#888", fontSize: 12, cursor: "pointer"
+                    }}
+                  >
+                    {t.comments.delete}
+                  </button>
                 </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold mb-2">{event.title}</h3>
-                  <p className="text-gray-400 text-sm mb-4 leading-relaxed">{event.desc}</p>
-                  <div className="text-gray-500 text-sm flex items-center gap-2">
-                    <span>🕐</span> {event.time}
-                  </div>
-                </div>
+                <p style={{ color: "#ccc", fontSize: 14, lineHeight: 1.6, margin: 0 }}>{c.text}</p>
               </div>
-            ))}
-          </div>
+            ))
+          )}
         </div>
       </section>
-            {/* Наша команда */}
-      <section className="py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="text-[#d4af37] text-sm font-bold tracking-[4px] uppercase mb-4">Our Team</div>
-            <h2 className="text-4xl font-bold mb-6">Наша команда</h2>
-            <div className="w-20 h-1 bg-[#d4af37] mx-auto"></div>
-          </div>
-          <div className="grid md:grid-cols-2 gap-8">
-            {[
-              {
-                name: 'Олег Абатуров',
-                role: 'Основатель',
-                desc: 'Призван нести Евангелие. Толкование снов. Более 30 лет в служении.',
-                initial: 'ОА',
-              },
-              {
-                name: 'Всеволод Абатуров',
-                role: 'Основатель',
-                desc: 'Призван нести Евангелие. Учить Слову Божию. Более 30 лет в служении.',
-                initial: 'ВА',
-              },
-            ].map((member, i) => (
-              <div key={i} className="bg-[#111] border border-[#222] rounded-2xl p-8 flex gap-6 items-start hover:border-[#d4af37]/30 transition-colors">
-                <div className="w-16 h-16 bg-[#d4af37]/20 rounded-full flex items-center justify-center text-[#d4af37] font-bold text-xl flex-shrink-0">
-                  {member.initial}
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold mb-1">{member.name}</h3>
-                  <p className="text-[#d4af37] text-sm font-bold mb-3">{member.role}</p>
-                  <p className="text-gray-400 leading-relaxed text-sm">{member.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+
+      {/* SCRIPTURE */}
+      <section style={{
+        padding: "60px 20px", backgroundColor: "#0d0d0d",
+        background: "linear-gradient(135deg, #0d0d0d 0%, #1a1a0a 100%)"
+      }}>
+        <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
+          <blockquote style={{
+            color: "#d4af37", fontSize: "clamp(1.1rem, 2.5vw, 1.4rem)",
+            fontStyle: "italic", lineHeight: 1.8, marginBottom: 15
+          }}>
+            &ldquo;{t.scripture.quote}&rdquo;
+          </blockquote>
+          <cite style={{ color: "#888", fontSize: 14 }}>— {t.scripture.source}</cite>
         </div>
       </section>
-      {/* Миссия */}
-      <section id="mission" className="py-24 px-6 bg-[#111]">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="text-[#d4af37] text-sm font-bold tracking-[4px] uppercase mb-4">Our Mission</div>
-          <h2 className="text-4xl font-bold mb-6">Наша миссия</h2>
-          <div className="w-20 h-1 bg-[#d4af37] mx-auto mb-12"></div>
-          <p className="text-gray-400 text-lg leading-relaxed mb-8">
-            Мы призваны нести свет Евангелия, служить сообществу и поддерживать тех,
-            кто нуждается в помощи. Через молитву, служение и любовь мы стремимся
-            изменить мир к лучшему — одно сердце за раз.
-          </p>
-          <div className="grid sm:grid-cols-2 gap-6 mt-12">
-            {[
-              'Еженедельные собрания и молитвы',
-              'Помощь нуждающимся',
-              'Образовательные программы',
-              'Молодёжные инициативы',
-              'Поддержка семей',
-              'Международное сотрудничество',
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-3 text-left bg-[#0a0a0a] border border-[#222] rounded-xl p-4">
-                <div className="w-2 h-2 bg-[#d4af37] rounded-full flex-shrink-0"></div>
-                <span className="text-gray-300">{item}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      {/* Отзывы */}
-      <section className="py-24 px-6 bg-[#111]">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="text-[#d4af37] text-sm font-bold tracking-[4px] uppercase mb-4">Testimonials</div>
-            <h2 className="text-4xl font-bold mb-6">Что говорят о нас</h2>
-            <div className="w-20 h-1 bg-[#d4af37] mx-auto"></div>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                text: 'Благодаря этому служению моя жизнь изменилась. Я нашёл веру, друзей и цель. Благодарю Бога за братьев Абатур!',
-                name: 'Алексей',
-                city: 'Москва',
-              },
-              {
-                text: 'Молодёжные конференции — это невероятная атмосфера. Здесь чувствуешь настоящую любовь и поддержку.',
-                name: 'Мария',
-                city: 'Санкт-Петербург',
-              },
-              {
-                text: 'Каждое собрание наполнено светом и надеждой. Это место, куда хочется возвращаться снова и снова.',
-                name: 'Дмитрий',
-                city: 'Казань',
-              },
-            ].map((review, i) => (
-              <div key={i} className="bg-[#0a0a0a] border border-[#222] rounded-2xl p-8 hover:border-[#d4af37]/30 transition-colors">
-                <div className="text-[#d4af37] text-3xl mb-4">&ldquo;</div>
-                <p className="text-gray-300 leading-relaxed mb-6">{review.text}</p>
-                <div className="border-t border-[#222] pt-4">
-                  <div className="font-bold">{review.name}</div>
-                  <div className="text-gray-500 text-sm">{review.city}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-            {/* Контакты */}
-      <section id="contacts" className="py-24 px-6">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="text-[#d4af37] text-sm font-bold tracking-[4px] uppercase mb-4">Contact</div>
-          <h2 className="text-4xl font-bold mb-6">Связаться с нами</h2>
-          <div className="w-20 h-1 bg-[#d4af37] mx-auto mb-12"></div>
-        </div>
-        <ContactForm />
-      </section>
-      {/* Писание дня */}
-      <section className="py-20 px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-gradient-to-br from-[#1a1a2e] to-[#111] border border-[#d4af37]/20 rounded-2xl p-10 md:p-14 text-center relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-[#d4af37]/5 rounded-full blur-[60px]"></div>
-            <div className="text-[#d4af37] text-sm font-bold tracking-[4px] uppercase mb-6">Daily Scripture</div>
-            <blockquote className="text-2xl md:text-3xl text-gray-200 leading-relaxed mb-6 italic">
-              &ldquo;Ибо Я знаю мысли, какие думаю о вас, говорит Господь,
-              мысли о мире, а не о зле, чтобы дать вам будущее и надежду.&rdquo;
-            </blockquote>
-            <div className="text-[#d4af37] font-bold text-lg mb-2">Иеремия 29:11</div>
-            <div className="w-12 h-[2px] bg-[#d4af37]/50 mx-auto my-6"></div>
-            <p className="text-gray-500 text-sm">
-              Каждый день — новая надежда и новая возможность служить.
-            </p>
-          </div>
-        </div>
-      </section>
-      {/* Footer */}
-      <footer className="border-t border-[#222] py-8 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="text-[#d4af37] font-bold">ABATUR BROTHERS MINISTRIES</div>
-          <div className="text-gray-500 text-sm">© 2026 Все права защищены</div>
-        </div>
+
+      {/* FOOTER */}
+      <footer style={{
+        padding: "30px", textAlign: "center", borderTop: "1px solid #222",
+        color: "#555", fontSize: 13
+      }}>
+        <p>{t.footer}</p>
       </footer>
+
+      {/* TELEGRAM CHAT WIDGET — outside all sections! */}
+      <button
+        onClick={() => setChatOpen(!chatOpen)}
+        style={{
+          position: "fixed", bottom: 25, right: 25, zIndex: 100,
+          width: 60, height: 60, borderRadius: "50%",
+          backgroundColor: "#d4af37", border: "none", cursor: "pointer",
+          fontSize: 28, boxShadow: "0 4px 20px rgba(212,175,55,0.4)",
+          transition: "transform 0.3s", display: "flex",
+          alignItems: "center", justifyContent: "center"
+        }}
+      >
+        {chatOpen ? "✕" : "💬"}
+      </button>
+
+      {chatOpen && (
+        <div style={{
+          position: "fixed", bottom: 100, right: 25, zIndex: 100,
+          width: 340, height: 440, backgroundColor: "#111",
+          border: "1px solid #333", borderRadius: 16,
+          display: "flex", flexDirection: "column",
+          boxShadow: "0 10px 40px rgba(0,0,0,0.5)"
+        }}>
+          {/* Chat Header */}
+          <div style={{
+            padding: "15px 18px", borderBottom: "1px solid #222",
+            display: "flex", justifyContent: "space-between", alignItems: "center"
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "#25D366" }} />
+              <span style={{ color: "#d4af37", fontWeight: "bold", fontSize: 15 }}>{t.chat.title}</span>
+            </div>
+            <button onClick={() => setChatOpen(false)} style={{ backgroundColor: "transparent", border: "none", color: "#888", fontSize: 18, cursor: "pointer" }}>✕</button>
+          </div>
+
+          {/* Messages */}
+          <div style={{ flex: 1, padding: 15, overflowY: "auto" }}>
+            <div style={{ backgroundColor: "#1a1a1a", borderRadius: 12, padding: "12px 15px", marginBottom: 10, maxWidth: "85%" }}>
+              <p style={{ color: "#ccc", fontSize: 13, margin: 0, lineHeight: 1.5 }}>{t.chat.welcome}</p>
+            </div>
+            {chatStatus === "sent" && (
+              <div style={{ backgroundColor: "#d4af3715", borderRadius: 12, padding: "10px 15px", marginBottom: 10, maxWidth: "85%", marginLeft: "auto" }}>
+                <p style={{ color: "#d4af37", fontSize: 13, margin: 0 }}>{t.chat.sent}</p>
+              </div>
+            )}
+            {chatStatus === "error" && (
+              <div style={{ backgroundColor: "#ff000015", borderRadius: 12, padding: "10px 15px", marginBottom: 10, maxWidth: "85%", marginLeft: "auto" }}>
+                <p style={{ color: "#ff6666", fontSize: 13, margin: 0 }}>{t.chat.error}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Input */}
+          <div style={{ padding: 12, borderTop: "1px solid #222", display: "flex", flexDirection: "column", gap: 8 }}>
+            {!chatName && (
+              <input
+                type="text"
+                placeholder={t.chat.namePlaceholder}
+                value={chatName}
+                onChange={(e: any) => setChatName(e.target.value)}
+                style={{ width: "100%", padding: "10px 12px", backgroundColor: "#0a0a0a", border: "1px solid #333", borderRadius: 8, color: "#fff", fontSize: 13, outline: "none" }}
+              />
+            )}
+            <div style={{ display: "flex", gap: 8 }}>
+              <input
+                type="text"
+                placeholder={t.chat.messagePlaceholder}
+                value={chatMsg}
+                onChange={(e: any) => setChatMsg(e.target.value)}
+                onKeyDown={(e: any) => e.key === "Enter" && sendChatMessage()}
+                style={{ flex: 1, padding: "10px 12px", backgroundColor: "#0a0a0a", border: "1px solid #333", borderRadius: 8, color: "#fff", fontSize: 13, outline: "none" }}
+              />
+              <button onClick={sendChatMessage} disabled={chatStatus === "sending"} style={{ padding: "10px 16px", backgroundColor: "#d4af37", border: "none", borderRadius: 8, color: "#000", fontWeight: "bold", fontSize: 13, cursor: "pointer" }}>
+                {chatStatus === "sending" ? "..." : "➤"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -8,3 +8,19 @@ body {
   margin: 0;
   padding: 0;
 }
+
+@media (min-width: 769px) {
+  .burger-btn {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .burger-btn {
+    display: block !important;
+  }
+
+  nav > div:nth-child(2) {
+    display: none !important;
+  }
+}
