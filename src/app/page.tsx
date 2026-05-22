@@ -10,7 +10,7 @@ export default function Home() {
 
   // Комментарии
   const [comments, setComments] = useState<any[]>([
-    { id: 1, name: "Олег", text: "Благословеннослужение! Бог благословит вашу работу.", date: "2025-01-15" },
+    { id: 1, name: "Олег", text: "Благословенное служение! Бог благословит вашу работу.", date: "2025-01-15" },
     { id: 2, name: "Maria", text: "Wonderful ministry! God bless your work.", date: "2025-01-14" },
   ]);
   const [commentName, setCommentName] = useState("");
@@ -22,8 +22,9 @@ export default function Home() {
   const [chatMsg, setChatMsg] = useState("");
   const [chatStatus, setChatStatus] = useState("idle");
 
-  const navLinks = [
+    const navLinks = [
     { href: "#about", label: t.nav.about },
+    { href: "/blog", label: t.nav.blog },
     { href: "#events", label: t.nav.events },
     { href: "#team", label: t.nav.team },
     { href: "#mission", label: t.nav.mission },

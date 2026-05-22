@@ -2,9 +2,10 @@ export type Language = "ru" | "en";
 
 export const translations = {
   ru: {
-    nav: {
+        nav: {
       brand: "ABATUR MINISTRIES",
       about: "О нас",
+      blog: "Блог",
       events: "События",
       team: "Команда",
       mission: "Миссия",
@@ -119,9 +120,10 @@ export const translations = {
   },
 
   en: {
-    nav: {
+        nav: {
       brand: "ABATUR MINISTRIES",
       about: "About",
+      blog: "Blog",
       events: "Events",
       team: "Team",
       mission: "Mission",
