@@ -2,7 +2,7 @@ export type Language = "ru" | "en";
 
 export const translations = {
   ru: {
-        nav: {
+    nav: {
       brand: "ABATUR MINISTRIES",
       about: "О нас",
       blog: "Блог",
@@ -11,6 +11,8 @@ export const translations = {
       mission: "Миссия",
       contacts: "Контакты",
       comments: "Комментарии",
+      home: "Главная",
+      library: "Библиотека",
     },
     hero: {
       title1: "Abatur Brothers",
@@ -38,7 +40,7 @@ export const translations = {
       heading: "События",
       items: [
         { date: "15 июня", title: "Вечер молитвы", tag: "Молитва" },
-        { date: "22 июня", title: "Молодёжная встреча", tag: "Молодёжь" },
+        { date: "26 июня", title: "Презентация книги", tag: "Книги" },
         { date: "29 июня", title: "Библейское изучение", tag: "Обучение" },
       ],
     },
@@ -63,7 +65,7 @@ export const translations = {
       items: [
         "Проповедь Слова Божьего",
         "Молитвенная поддержка",
-        "Молодёжное служение",
+        "Толкование снов",
         "Обучение и духовный рост",
         "Помощь нуждающимся",
         "Единство братьев и сестёр",
@@ -100,7 +102,6 @@ export const translations = {
       noComments: "Пока нет комментариев. Будьте первым!",
       messageLabel: "сообщение",
     },
-      // Чат-виджет
     chat: {
       title: "Чат с нами",
       welcome: "Здравствуйте! Напишите нам, и мы ответим в Telegram.",
@@ -111,16 +112,30 @@ export const translations = {
       sent: "Сообщение отправлено!",
       error: "Ошибка. Попробуйте позже.",
     },
+    library: {
+      title: "Библиотека",
+      subtitle: "Христианская литература для духовного роста",
+      searchPlaceholder: "Поиск по названию...",
+      categories: "Категории",
+      all: "Все",
+      prayer: "Молитва",
+      faith: "Вера",
+      bible: "Библия",
+      christianLife: "Христианская жизнь",
+      noResults: "Ничего не найдено",
+      readOnline: "Читать онлайн",
+      download: "Скачать PDF",
+      readMore: "Подробнее",
+    },
     scripture: {
       quote: "Ибо где двое или трое собраны во имя Моё, там Я посреди них.",
       source: "Матфея 18:20",
     },
     footer: "© 2026 Abatur Brothers Ministries. Все права защищены.",
-    
   },
 
   en: {
-        nav: {
+    nav: {
       brand: "ABATUR MINISTRIES",
       about: "About",
       blog: "Blog",
@@ -129,6 +144,8 @@ export const translations = {
       mission: "Mission",
       contacts: "Contacts",
       comments: "Comments",
+      home: "Home",
+      library: "Library",
     },
     hero: {
       title1: "Abatur Brothers",
@@ -156,7 +173,7 @@ export const translations = {
       heading: "Events",
       items: [
         { date: "June 15", title: "Prayer Evening", tag: "Prayer" },
-        { date: "June 22", title: "Youth Gathering", tag: "Youth" },
+        { date: "June 26", title: "Book presentation", tag: "Book" },
         { date: "June 29", title: "Bible Study", tag: "Study" },
       ],
     },
@@ -181,7 +198,7 @@ export const translations = {
       items: [
         "Preaching the Word of God",
         "Prayer support",
-        "Youth ministry",
+        "Dream Interpretation",
         "Teaching and spiritual growth",
         "Helping those in need",
         "Unity of brothers and sisters",
@@ -218,7 +235,6 @@ export const translations = {
       noComments: "No comments yet. Be the first!",
       messageLabel: "message",
     },
-        // Chat widget
     chat: {
       title: "Chat with us",
       welcome: "Hello! Write to us and we will reply in Telegram.",
@@ -228,6 +244,21 @@ export const translations = {
       sending: "Sending...",
       sent: "Message sent!",
       error: "Error. Please try again later.",
+    },
+    library: {
+      title: "Library",
+      subtitle: "Christian literature for spiritual growth",
+      searchPlaceholder: "Search by title...",
+      categories: "Categories",
+      all: "All",
+      prayer: "Prayer",
+      faith: "Faith",
+      bible: "Bible",
+      christianLife: "Christian Life",
+      noResults: "Nothing found",
+      readOnline: "Read online",
+      download: "Download PDF",
+      readMore: "Read more",
     },
     scripture: {
       quote: "For where two or three gather in my name, there am I with them.",

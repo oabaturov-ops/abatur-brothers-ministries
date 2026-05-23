@@ -23,13 +23,15 @@ export default function Home() {
   const [chatStatus, setChatStatus] = useState("idle");
 
     const navLinks = [
+    { href: "/", label: t.nav.home },
     { href: "#about", label: t.nav.about },
-    { href: "/blog", label: t.nav.blog },
     { href: "#events", label: t.nav.events },
     { href: "#team", label: t.nav.team },
     { href: "#mission", label: t.nav.mission },
     { href: "#contacts", label: t.nav.contacts },
     { href: "#comments", label: t.nav.comments },
+    { href: "/blog", label: t.nav.blog },
+    { href: "/library", label: t.nav.library },
   ];
 
   function addComment() {
