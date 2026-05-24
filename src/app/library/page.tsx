@@ -25,10 +25,10 @@ export default function Library() {
         maxWidth: 1100, margin: "0 auto", padding: "60px 20px 40px",
         textAlign: "center",
       }}>
-        <h1 style={{ fontSize: 36, marginBottom: 8 }}>
+        <h1 style={{ fontSize: 36, marginBottom: 8, color: "#fbbf24" }}>
           📚 {t.library.title}
         </h1>
-        <p style={{ color: "#8899aa", fontSize: 16 }}>
+        <p style={{ color: "#9ca3af", fontSize: 16 }}>
           {t.library.subtitle}
         </p>
       </div>
@@ -60,8 +60,8 @@ export default function Library() {
             style={{
               padding: "8px 18px", borderRadius: 20, border: "1px solid #1e2d3d",
               cursor: "pointer", fontSize: 13, fontWeight: 500,
-              backgroundColor: activeCategory === cat ? "#1a3a5c" : "#111827",
-              color: activeCategory === cat ? "#fff" : "#8899aa",
+              backgroundColor: activeCategory === cat ? "#fbbf24" : "#111827",
+              color: activeCategory === cat ? "#0a0f1a" : "#9ca3af",
               transition: "all 0.2s",
             }}
           >
@@ -101,10 +101,10 @@ export default function Library() {
                 <h3 style={{ fontSize: 17, marginBottom: 4, color: "#fff" }}>
                   {lang === "ru" ? book.titleRu : book.titleEn}
                 </h3>
-                <p style={{ color: "#5a7a9a", fontSize: 13, marginBottom: 10 }}>
+                <p style={{ color: "#9ca3af", fontSize: 13, marginBottom: 10 }}>
                   {lang === "ru" ? book.authorRu : book.authorEn}
                 </p>
-                <p style={{ color: "#8899aa", fontSize: 13, marginBottom: 14, lineHeight: 1.5 }}>
+                <p style={{ color: "#9ca3af", fontSize: 13, marginBottom: 14, lineHeight: 1.5 }}>
                   {lang === "ru" ? book.descriptionRu : book.descriptionEn}
                 </p>
 
@@ -114,7 +114,7 @@ export default function Library() {
                     <a href={book.pdfUrl}
                       style={{
                         flex: 1, textAlign: "center", padding: "9px 0",
-                        backgroundColor: "#1a3a5c", color: "#fff",
+                        backgroundColor: "#fbbf24", color: "#0a0f1a",
                         borderRadius: 8, textDecoration: "none", fontSize: 13,
                         fontWeight: 500,
                       }}
@@ -143,8 +143,8 @@ export default function Library() {
       {/* Навигация назад */}
       <div style={{ textAlign: "center", paddingBottom: 60 }}>
         <a href="/" style={{
-          color: "#5a7a9a", fontSize: 15, textDecoration: "none",
-          borderBottom: "1px solid #5a7a9a", paddingBottom: 2,
+                   color: "#fbbf24", fontSize: 15, textDecoration: "none",
+          borderBottom: "1px solid #fbbf24", paddingBottom: 2,
         }}>
           ← {lang === "ru" ? "На главную" : "Back to Home"}
         </a>
