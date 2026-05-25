@@ -17,7 +17,7 @@ export const translations = {
     hero: {
       title1: "Abatur Brothers",
       titleHighlight: "Ministries",
-      subtitle: "Несём свет и надежду в мир. Служение, вера, единство.",
+            subtitle: "... и узрит Его всякое око... (Откр.1:7). Сайт - Онлайн Служение. Sola scriptura (лат.) Только Писание.",
       cta1: "Узнать больше",
       cta2: "Связаться с нами",
     },
@@ -150,7 +150,7 @@ export const translations = {
     hero: {
       title1: "Abatur Brothers",
       titleHighlight: "Ministries",
-      subtitle: "Bringing light and hope to the world. Ministry, faith, unity.",
+            subtitle: "...and every eye shall see Him... (Rev.1:7). Online Ministry. Sola scriptura.",
       cta1: "Learn More",
       cta2: "Contact Us",
     },
