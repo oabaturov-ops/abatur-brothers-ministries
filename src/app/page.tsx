@@ -1,566 +1,1238 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLanguage } from "@/lib/LanguageContext";
 
 export default function Home() {
-  const { lang, setLang, t } = useLanguage();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [selectedChannel, setSelectedChannel] = useState("whatsapp");
+  const { t } = useLanguage();
 
-  // Комментарии
-  const [comments, setComments] = useState<any[]>([
-    { id: 1, name: "Олег", text: "Благословенное служение! Бог благословит вашу работу.", date: "2025-01-15" },
-    { id: 2, name: "Maria", text: "Wonderful ministry! God bless your work.", date: "2025-01-14" },
-  ]);
+  // === Навигация ===
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // === Контакты ===
+  const [contactName, setContactName] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
+  const [contactStatus, setContactStatus] = useState("");
+
+  // === Комментарии ===
+  const [comments, setComments] = useState<any[]>([]);
   const [commentName, setCommentName] = useState("");
   const [commentText, setCommentText] = useState("");
+  const [commentStatus, setCommentStatus] = useState("");
 
-  // Чат-виджет
+  // === Молитвенная нужда ===
+  const [prayerName, setPrayerName] = useState("");
+  const [prayerRequest, setPrayerRequest] = useState("");
+  const [prayerStatus, setPrayerStatus] = useState("");
+  const [prayerAnonymous, setPrayerAnonymous] = useState(false);
+
+  // === Чат виджет ===
   const [chatOpen, setChatOpen] = useState(false);
-  const [chatName, setChatName] = useState("");
-  const [chatMsg, setChatMsg] = useState("");
-  const [chatStatus, setChatStatus] = useState("idle");
+  const [chatMessages, setChatMessages] = useState<
+    { role: string; text: string }[]
+  >([]);
+  const [chatInput, setChatInput] = useState("");
 
-    const navLinks = [
-    { href: "/", label: t.nav.home },
-    { href: "#about", label: t.nav.about },
-    { href: "#events", label: t.nav.events },
-    { href: "#team", label: t.nav.team },
-    { href: "#mission", label: t.nav.mission },
-    { href: "#contacts", label: t.nav.contacts },
-    { href: "#comments", label: t.nav.comments },
-    { href: "/blog", label: t.nav.blog },
-    { href: "/library", label: t.nav.library },
+  // === Текущая страница ===
+  const [currentPage] = useState("home");
+
+  // === Загрузка комментариев ===
+  useEffect(() => {
+    fetch("/api/comments")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setComments(data);
+      })
+      .catch(() => {});
+  }, []);
+
+  // === Навигационные ссылки ===
+  const navLinks = [
+    { href: "#home", label: t.nav?.home || "Главная" },
+    { href: "#about", label: t.nav?.about || "О нас" },
+    { href: "#events", label: t.nav?.events || "События" },
+    { href: "#team", label: t.nav?.team || "Команда" },
+    { href: "#mission", label: t.nav?.mission || "Миссия" },
+    { href: "#prayer", label: t.nav?.library ? "Молитва" : "Prayer" },
+    { href: "#contacts", label: t.nav?.contacts || "Контакты" },
+    { href: "/library", label: t.nav?.library || "Библиотека" },
   ];
 
-  function addComment() {
+  // === Функции мессенджеров ===
+  const openWhatsApp = () => {
+    const msg = encodeURIComponent(`${contactName}: ${contactMessage}`);
+    window.open(`https://wa.me/15551234567?text=${msg}`);
+  };
+
+  const openTelegram = () => {
+    const msg = encodeURIComponent(`${contactName}: ${contactMessage}`);
+    window.open(`https://t.me/Abaturministry_bot?text=${msg}`);
+  };
+
+  const openEmail = () => {
+    const msg = encodeURIComponent(`${contactName}: ${contactMessage}`);
+    window.open(`mailto:info@abaturministries.org?body=${msg}`);
+  };
+
+  // === Отправка комментария ===
+  const handleSubmitComment = async () => {
     if (!commentName.trim() || !commentText.trim()) return;
-    const newComment = {
-      id: Date.now(),
-      name: commentName,
-      text: commentText,
-      date: new Date().toISOString().slice(0, 10),
-    };
-    setComments([newComment, ...comments]);
-    setCommentName("");
-    setCommentText("");
-  }
+    setCommentStatus("sending");
+    try {
+      const res = await fetch("/api/comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: commentName, text: commentText }),
+      });
+      if (res.ok) {
+        setCommentName("");
+        setCommentText("");
+        setCommentStatus("success");
+        const data = await res.json();
+        setComments((prev) => [
+          ...(Array.isArray(data.comments) ? data.comments : [data]),
+        ]);
+        setTimeout(() => setCommentStatus(""), 3000);
+      }
+    } catch {
+      setCommentStatus("error");
+    }
+  };
 
-  function deleteComment(id: number) {
-    setComments(comments.filter((c: any) => c.id !== id));
-  }
-
-  async function sendChatMessage() {
-    if (!chatName.trim() || !chatMsg.trim()) return;
-    setChatStatus("sending");
+  // === Отправка молитвенной нужды ===
+  const handleSubmitPrayer = async () => {
+    if (!prayerRequest.trim()) return;
+    setPrayerStatus("sending");
     try {
       const res = await fetch("/api/telegram", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: chatName, message: chatMsg }),
+        body: JSON.stringify({
+          name: prayerAnonymous ? "Аноним" : prayerName,
+          message: prayerRequest,
+          topic: "prayer",
+        }),
       });
-      const data = await res.json();
-      if (data.success) {
-        setChatStatus("sent");
-        setChatMsg("");
+      if (res.ok) {
+        setPrayerName("");
+        setPrayerRequest("");
+        setPrayerAnonymous(false);
+        setPrayerStatus("success");
+        setTimeout(() => setPrayerStatus(""), 3000);
       } else {
-        setChatStatus("error");
+        setPrayerStatus("error");
       }
     } catch {
-      setChatStatus("error");
+      setPrayerStatus("error");
     }
-    setTimeout(() => setChatStatus("idle"), 3000);
-  }
+  };
 
+  // === Чат бот ===
+  const sendChatMessage = async () => {
+    if (!chatInput.trim()) return;
+    const userMsg = chatInput;
+    setChatMessages((prev) => [...prev, { role: "user", text: userMsg }]);
+    setChatInput("");
+    try {
+      const res = await fetch("/api/telegram", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: "Chat", message: userMsg }),
+      });
+      if (res.ok) {
+        setChatMessages((prev) => [
+          ...prev,
+          {
+            role: "bot",
+            text:
+              "Спасибо за ваше сообщение! Мы ответим как можно скорее.",
+          },
+        ]);
+      }
+    } catch {
+      setChatMessages((prev) => [
+        ...prev,
+        { role: "bot", text: "Ошибка отправки. Попробуйте позже." },
+      ]);
+    }
+  };
+
+  // ========================================
+  // ОСНОВНОЙ ДИЗАЙН: ЧЁРНЫЙ / ЖЁЛТЫЙ
+  // ========================================
+
+  // === Общие стили ===
+  const sectionPadding = { padding: "80px 20px" };
+  const maxWidth = { maxWidth: "1200px", margin: "0 auto" };
+  const sectionTitle = {
+    fontSize: "36px",
+    fontWeight: "bold",
+    textAlign: "center" as const,
+    marginBottom: "50px",
+    color: "#fbbf24",
+  };
+  const cardStyle = {
+    background: "#111827",
+    borderRadius: "12px",
+    padding: "30px",
+    border: "1px solid #1e2d3d",
+  };
+
+  // ========================================
+  // РЕНДЕР
+  // ========================================
   return (
-    <div style={{ backgroundColor: "#0a0a0a", color: "#fff", minHeight: "100vh" }}>
-      {/* NAVIGATION */}
-      <nav style={{
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
-        backgroundColor: "rgba(10,10,10,0.9)", backdropFilter: "blur(10px)",
-        borderBottom: "1px solid #222", padding: "15px 30px",
-        display: "flex", justifyContent: "space-between", alignItems: "center"
-      }}>
-        <a href="#" style={{ color: "#d4af37", fontSize: 20, fontWeight: "bold", textDecoration: "none" }}>
-          {t.nav.brand}
-        </a>
-
-        {/* Desktop menu */}
-        <div style={{ display: "flex", gap: 25, alignItems: "center" }}>
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              style={{ color: "#ccc", textDecoration: "none", fontSize: 14, transition: "color 0.3s" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#d4af37")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#ccc")}
-            >
-              {link.label}
-            </a>
-          ))}
-
-          {/* Language Toggle */}
-          <button
-            onClick={() => setLang(lang === "ru" ? "en" : "ru")}
-            style={{
-              padding: "6px 14px", backgroundColor: "#111", border: "1px solid #d4af37",
-              borderRadius: 6, color: "#d4af37", fontSize: 13, fontWeight: "bold",
-              cursor: "pointer", transition: "0.3s"
-            }}
-          >
-            {lang === "ru" ? "EN" : "RU"}
-          </button>
-        </div>
-
-        {/* Burger */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          style={{
-            display: "none", backgroundColor: "transparent", border: "none",
-            cursor: "pointer", padding: "5px"
-          }}
-          className="burger-btn"
-        >
-          <div style={{ width: 25, height: 2, backgroundColor: "#d4af37", marginBottom: 5, transition: "0.3s" }} />
-          <div style={{ width: 25, height: 2, backgroundColor: "#d4af37", marginBottom: 5, transition: "0.3s" }} />
-          <div style={{ width: 25, height: 2, backgroundColor: "#d4af37", transition: "0.3s" }} />
-        </button>
-      </nav>
-
-      {/* Mobile menu */}
-      {menuOpen && (
-        <div style={{
-          position: "fixed", top: 60, left: 0, right: 0, zIndex: 40,
-          backgroundColor: "rgba(10,10,10,0.98)", borderBottom: "1px solid #222",
-          padding: "20px 30px", display: "flex", flexDirection: "column", gap: 15
-        }}>
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              style={{ color: "#ccc", textDecoration: "none", fontSize: 16 }}
-            >
-              {link.label}
-            </a>
-          ))}
-          <button
-            onClick={() => { setLang(lang === "ru" ? "en" : "ru"); setMenuOpen(false); }}
-            style={{
-              padding: "10px", backgroundColor: "#111", border: "1px solid #d4af37",
-              borderRadius: 6, color: "#d4af37", fontSize: 14, fontWeight: "bold",
-              cursor: "pointer", marginTop: 5
-            }}
-          >
-            {lang === "ru" ? "EN English" : "RU Русский"}
-          </button>
-        </div>
-      )}
-
-      {/* HERO */}
-      <section style={{
-        minHeight: "100vh", display: "flex", flexDirection: "column",
-        justifyContent: "center", alignItems: "center", textAlign: "center",
-        padding: "20px", position: "relative", overflow: "hidden",
-        background: "radial-gradient(circle at 50% 50%, #1a1a0a 0%, #0a0a0a 70%)"
-      }}>
-        <div style={{
-          position: "absolute", width: 400, height: 400, borderRadius: "50%",
-          background: "#d4af37", filter: "blur(150px)", opacity: 0.15, top: "20%", left: "50%", transform: "translateX(-50%)"
-        }} />
-        <h1 style={{ fontSize: "clamp(2rem, 6vw, 4rem)", fontWeight: "bold", marginBottom: 20, position: "relative" }}>
-          {t.hero.title1} <span style={{ color: "#d4af37" }}>{t.hero.titleHighlight}</span>
-        </h1>
-        <p style={{ fontSize: "clamp(1rem, 2vw, 1.3rem)", color: "#aaa", maxWidth: 600, marginBottom: 40, position: "relative" }}>
-          {t.hero.subtitle}
-        </p>
-        <div style={{ display: "flex", gap: 15, flexWrap: "wrap", justifyContent: "center", position: "relative" }}>
-          <a href="#about" style={{
-            padding: "14px 30px", backgroundColor: "#d4af37", color: "#000",
-            textDecoration: "none", fontWeight: "bold", borderRadius: 8, transition: "0.3s"
-          }}>{t.hero.cta1}</a>
-          <a href="#contacts" style={{
-            padding: "14px 30px", border: "1px solid #d4af37", color: "#d4af37",
-            textDecoration: "none", borderRadius: 8, transition: "0.3s"
-          }}>{t.hero.cta2}</a>
-        </div>
-      </section>
-
-      {/* ABOUT */}
-      <section id="about" style={{ padding: "80px 20px", maxWidth: 1000, margin: "0 auto" }}>
-        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 50 }}>{t.about.heading}</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 25 }}>
-          {[
-            { title: t.about.faith.title, text: t.about.faith.text, icon: "✝️" },
-            { title: t.about.ministry.title, text: t.about.ministry.text, icon: "🕊️" },
-            { title: t.about.unity.title, text: t.about.unity.text, icon: "🤝" },
-          ].map((item) => (
-            <div key={item.title} style={{
-              backgroundColor: "#111", border: "1px solid #222", borderRadius: 12,
-              padding: "30px", textAlign: "center"
-            }}>
-              <div style={{ fontSize: 40, marginBottom: 15 }}>{item.icon}</div>
-              <h3 style={{ color: "#d4af37", marginBottom: 10 }}>{item.title}</h3>
-              <p style={{ color: "#999", lineHeight: 1.6 }}>{item.text}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* EVENTS */}
-      <section id="events" style={{ padding: "80px 20px", backgroundColor: "#0d0d0d" }}>
-        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 50 }}>{t.events.heading}</h2>
-        <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 25 }}>
-          {t.events.items.map((event: any) => (
-            <div key={event.title} style={{
-              backgroundColor: "#111", border: "1px solid #222", borderRadius: 12, padding: "25px"
-            }}>
-              <span style={{ color: "#d4af37", fontSize: 13, fontWeight: "bold" }}>{event.date}</span>
-              <h3 style={{ marginTop: 10, marginBottom: 8 }}>{event.title}</h3>
-              <span style={{
-                fontSize: 12, padding: "4px 10px", backgroundColor: "#1a1a1a",
-                borderRadius: 20, color: "#888", border: "1px solid #333"
-              }}>{event.tag}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* TEAM */}
-      <section id="team" style={{ padding: "80px 20px", maxWidth: 1000, margin: "0 auto" }}>
-        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 50 }}>{t.team.heading}</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 25 }}>
-          {t.team.members.map((member: any) => (
-            <div key={member.name} style={{
-              backgroundColor: "#111", border: "1px solid #222", borderRadius: 12,
-              padding: "30px", textAlign: "center"
-            }}>
-              <div style={{
-                width: 80, height: 80, borderRadius: "50%", backgroundColor: "#1a1a0a",
-                border: "2px solid #d4af37", margin: "0 auto 15px",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 24, color: "#d4af37", fontWeight: "bold"
-              }}>
-                {member.name.split(" ").map((n: string) => n[0]).join("")}
-              </div>
-              <h3 style={{ color: "#d4af37", marginBottom: 5 }}>{member.name}</h3>
-              <p style={{ color: "#888", fontSize: 13, marginBottom: 10 }}>{member.role}</p>
-              <p style={{ color: "#aaa", fontSize: 14, lineHeight: 1.6 }}>{member.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* MISSION */}
-      <section id="mission" style={{ padding: "80px 20px", backgroundColor: "#0d0d0d" }}>
-        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 50 }}>{t.mission.heading}</h2>
-        <div style={{ maxWidth: 800, margin: "0 auto" }}>
-          <p style={{ color: "#ccc", lineHeight: 1.8, textAlign: "center", marginBottom: 30 }}>
-            {t.mission.text}
-          </p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 15 }}>
-            {t.mission.items.map((item: any) => (
-              <div key={item} style={{
-                padding: "15px", backgroundColor: "#111", border: "1px solid #222",
-                borderRadius: 8, color: "#ccc", fontSize: 14
-              }}>
-                ✦ {item}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CONTACTS */}
-      <section id="contacts" style={{ padding: "80px 20px", maxWidth: 800, margin: "0 auto" }}>
-        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 15 }}>{t.contacts.heading}</h2>
-        <p style={{ textAlign: "center", color: "#888", marginBottom: 40 }}>
-          {t.contacts.subtitle}
-        </p>
-
-        <form
-          onSubmit={(e: any) => {
-            e.preventDefault();
-            const name = (e.target as any).elements.cname.value;
-            const email = (e.target as any).elements.cemail.value;
-            const message = (e.target as any).elements.cmessage.value;
-            const text = `Name: ${name}\nEmail: ${email}\n\n${message}`;
-
-            const WHATSAPP_NUMBER = "15551234567";
-            const TELEGRAM_USER = "Abaturministry_bot";
-            const EMAIL_ADDRESS = "info@abaturministries.org";
-            const FACEBOOK_PAGE = "AbaturBrothersMinistries";
-
-            const links: any = {
-              whatsapp: `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`,
-              telegram: `https://t.me/${TELEGRAM_USER}?text=${encodeURIComponent(text)}`,
-              email: `mailto:${EMAIL_ADDRESS}?subject=Message from website&body=${encodeURIComponent(text)}`,
-              facebook: `https://m.me/${FACEBOOK_PAGE}`,
-            };
-
-            window.open(links[selectedChannel], "_blank");
-          }}
-          style={{ display: "flex", flexDirection: "column", gap: 15 }}
-        >
-          <input name="cname" type="text" placeholder={t.contacts.namePlaceholder} required style={{
-            padding: "12px 15px", backgroundColor: "#111", border: "1px solid #333",
-            borderRadius: 8, color: "#fff", fontSize: 14, outline: "none"
-          }} />
-          <input name="cemail" type="email" placeholder={t.contacts.emailPlaceholder} required style={{
-            padding: "12px 15px", backgroundColor: "#111", border: "1px solid #333",
-            borderRadius: 8, color: "#fff", fontSize: 14, outline: "none"
-          }} />
-          <textarea name="cmessage" placeholder={t.contacts.messagePlaceholder} required rows={4} style={{
-            padding: "12px 15px", backgroundColor: "#111", border: "1px solid #333",
-            borderRadius: 8, color: "#fff", fontSize: 14, outline: "none", resize: "vertical"
-          }} />
-
-          <p style={{ color: "#888", fontSize: 13, margin: "5px 0 0" }}>{t.contacts.chooseChannel}</p>
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            {[
-              { key: "whatsapp", label: t.contacts.channels.whatsapp, icon: "📱", color: "#25D366" },
-              { key: "telegram", label: t.contacts.channels.telegram, icon: "💬", color: "#0088cc" },
-              { key: "email", label: t.contacts.channels.email, icon: "📧", color: "#d4af37" },
-              { key: "facebook", label: t.contacts.channels.facebook, icon: "📘", color: "#1877F2" },
-            ].map((btn: any) => (
-              <button
-                key={btn.key}
-                type="button"
-                onClick={() => setSelectedChannel(btn.key)}
-                style={{
-                  padding: "14px 10px", border: selectedChannel === btn.key
-                    ? `2px solid ${btn.color}`
-                    : "1px solid #333",
-                  borderRadius: 8, backgroundColor: selectedChannel === btn.key
-                    ? `${btn.color}15`
-                    : "#111",
-                  color: "#ccc", fontSize: 14, cursor: "pointer",
-                  transition: "0.3s", display: "flex", alignItems: "center",
-                  justifyContent: "center", gap: 8
-                }}
-              >
-                <span>{btn.icon}</span> {btn.label}
-              </button>
-            ))}
-          </div>
-
-          <button type="submit" style={{
-            padding: "14px", backgroundColor: "#d4af37", color: "#000",
-            border: "none", borderRadius: 8, fontWeight: "bold", fontSize: 15,
-            cursor: "pointer", transition: "0.3s", marginTop: 5
-          }}>
-            {t.contacts.sendVia} {t.contacts.channels[selectedChannel as keyof typeof t.contacts.channels]}
-          </button>
-        </form>
-
-        <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12 }}>
-          {[
-            { label: t.contacts.info[0].label, value: t.contacts.info[0].value, icon: "📱", color: "#25D366", link: "https://wa.me/15551234567" },
-            { label: t.contacts.info[1].label, value: t.contacts.info[1].value, icon: "💬", color: "#0088cc", link: "https://t.me/Abaturministry_bot" },
-            { label: t.contacts.info[2].label, value: t.contacts.info[2].value, icon: "📧", color: "#d4af37", link: "mailto:info@abaturministries.org" },
-            { label: t.contacts.info[3].label, value: t.contacts.info[3].value, icon: "📘", color: "#1877F2", link: "https://m.me/AbaturBrothersMinistries" },
-          ].map((contact) => (
-            <a
-              key={contact.label}
-              href={contact.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                padding: "18px", backgroundColor: "#111", border: `1px solid ${contact.color}33`,
-                borderRadius: 10, display: "flex", alignItems: "center", gap: 12, textDecoration: "none"
-              }}
-            >
-              <span style={{ fontSize: 28 }}>{contact.icon}</span>
-              <div>
-                <div style={{ color: contact.color, fontSize: 12, fontWeight: "bold" }}>{contact.label}</div>
-                <div style={{ color: "#999", fontSize: 12 }}>{contact.value}</div>
-              </div>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      {/* COMMENTS */}
-      <section id="comments" style={{ padding: "80px 20px", backgroundColor: "#0d0d0d" }}>
-        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 15 }}>{t.comments.heading}</h2>
-        <p style={{ textAlign: "center", color: "#888", marginBottom: 40 }}>{t.comments.subtitle}</p>
-
-        <div style={{ maxWidth: 600, margin: "0 auto" }}>
-          {/* Add comment form */}
-          <div style={{
-            backgroundColor: "#111", border: "1px solid #222", borderRadius: 12,
-            padding: "20px", marginBottom: 30
-          }}>
-            <input
-              type="text"
-              placeholder={t.comments.namePlaceholder}
-              value={commentName}
-              onChange={(e: any) => setCommentName(e.target.value)}
-              style={{
-                width: "100%", padding: "10px 14px", backgroundColor: "#0a0a0a",
-                border: "1px solid #333", borderRadius: 6, color: "#fff",
-                fontSize: 14, outline: "none", marginBottom: 10
-              }}
-            />
-            <textarea
-              placeholder={t.comments.commentPlaceholder}
-              value={commentText}
-              onChange={(e: any) => setCommentText(e.target.value)}
-              rows={3}
-              style={{
-                width: "100%", padding: "10px 14px", backgroundColor: "#0a0a0a",
-                border: "1px solid #333", borderRadius: 6, color: "#fff",
-                fontSize: 14, outline: "none", marginBottom: 10, resize: "vertical"
-              }}
-            />
-            <button
-              onClick={addComment}
-              style={{
-                width: "100%", padding: "12px", backgroundColor: "#d4af37",
-                color: "#000", border: "none", borderRadius: 6, fontWeight: "bold",
-                fontSize: 14, cursor: "pointer"
-              }}
-            >
-              {t.comments.submit}
-            </button>
-          </div>
-
-          {/* Comments list */}
-          {comments.length === 0 ? (
-            <p style={{ textAlign: "center", color: "#555" }}>{t.comments.noComments}</p>
-          ) : (
-            comments.map((c: any) => (
-              <div key={c.id} style={{
-                backgroundColor: "#111", border: "1px solid #222", borderRadius: 10,
-                padding: "18px", marginBottom: 12
-              }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                  <div>
-                    <span style={{ color: "#d4af37", fontWeight: "bold", fontSize: 14 }}>{c.name}</span>
-                    <span style={{ color: "#555", fontSize: 12, marginLeft: 10 }}>{c.date}</span>
-                  </div>
-                  <button
-                    onClick={() => deleteComment(c.id)}
-                    style={{
-                      padding: "4px 10px", backgroundColor: "#1a1a1a", border: "1px solid #333",
-                      borderRadius: 4, color: "#888", fontSize: 12, cursor: "pointer"
-                    }}
-                  >
-                    {t.comments.delete}
-                  </button>
-                </div>
-                <p style={{ color: "#ccc", fontSize: 14, lineHeight: 1.6, margin: 0 }}>{c.text}</p>
-              </div>
-            ))
-          )}
-        </div>
-      </section>
-
-      {/* SCRIPTURE */}
-      <section style={{
-        padding: "60px 20px", backgroundColor: "#0d0d0d",
-        background: "linear-gradient(135deg, #0d0d0d 0%, #1a1a0a 100%)"
-      }}>
-        <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
-          <blockquote style={{
-            color: "#d4af37", fontSize: "clamp(1.1rem, 2.5vw, 1.4rem)",
-            fontStyle: "italic", lineHeight: 1.8, marginBottom: 15
-          }}>
-            &ldquo;{t.scripture.quote}&rdquo;
-          </blockquote>
-          <cite style={{ color: "#888", fontSize: 14 }}>— {t.scripture.source}</cite>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer style={{
-        padding: "30px", textAlign: "center", borderTop: "1px solid #222",
-        color: "#555", fontSize: 13
-      }}>
-        <p>{t.footer}</p>
-      </footer>
-
-      {/* TELEGRAM CHAT WIDGET — outside all sections! */}
-      <button
-        onClick={() => setChatOpen(!chatOpen)}
+    <div style={{ background: "#0a0f1a", color: "#e5e7eb", minHeight: "100vh" }}>
+      {/* ============ НАВИГАЦИЯ ============ */}
+      <nav
         style={{
-          position: "fixed", bottom: 25, right: 25, zIndex: 100,
-          width: 60, height: 60, borderRadius: "50%",
-          backgroundColor: "#d4af37", border: "none", cursor: "pointer",
-          fontSize: 28, boxShadow: "0 4px 20px rgba(212,175,55,0.4)",
-          transition: "transform 0.3s", display: "flex",
-          alignItems: "center", justifyContent: "center"
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1000,
+          background: "rgba(10, 15, 26, 0.95)",
+          backdropFilter: "blur(10px)",
+          borderBottom: "1px solid #1e2d3d",
+          padding: "15px 20px",
         }}
       >
-        {chatOpen ? "✕" : "💬"}
-      </button>
-
-      {chatOpen && (
-        <div style={{
-          position: "fixed", bottom: 100, right: 25, zIndex: 100,
-          width: 340, height: 440, backgroundColor: "#111",
-          border: "1px solid #333", borderRadius: 16,
-          display: "flex", flexDirection: "column",
-          boxShadow: "0 10px 40px rgba(0,0,0,0.5)"
-        }}>
-          {/* Chat Header */}
-          <div style={{
-            padding: "15px 18px", borderBottom: "1px solid #222",
-            display: "flex", justifyContent: "space-between", alignItems: "center"
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "#25D366" }} />
-              <span style={{ color: "#d4af37", fontWeight: "bold", fontSize: 15 }}>{t.chat.title}</span>
-            </div>
-            <button onClick={() => setChatOpen(false)} style={{ backgroundColor: "transparent", border: "none", color: "#888", fontSize: 18, cursor: "pointer" }}>✕</button>
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <div style={{ fontSize: "24px", fontWeight: "bold", color: "#fbbf24" }}>
+            Abatur Brothers
           </div>
 
-          {/* Messages */}
-          <div style={{ flex: 1, padding: 15, overflowY: "auto" }}>
-            <div style={{ backgroundColor: "#1a1a1a", borderRadius: 12, padding: "12px 15px", marginBottom: 10, maxWidth: "85%" }}>
-              <p style={{ color: "#ccc", fontSize: 13, margin: 0, lineHeight: 1.5 }}>{t.chat.welcome}</p>
-            </div>
-            {chatStatus === "sent" && (
-              <div style={{ backgroundColor: "#d4af3715", borderRadius: 12, padding: "10px 15px", marginBottom: 10, maxWidth: "85%", marginLeft: "auto" }}>
-                <p style={{ color: "#d4af37", fontSize: 13, margin: 0 }}>{t.chat.sent}</p>
-              </div>
-            )}
-            {chatStatus === "error" && (
-              <div style={{ backgroundColor: "#ff000015", borderRadius: 12, padding: "10px 15px", marginBottom: 10, maxWidth: "85%", marginLeft: "auto" }}>
-                <p style={{ color: "#ff6666", fontSize: 13, margin: 0 }}>{t.chat.error}</p>
-              </div>
-            )}
+          {/* Десктоп меню */}
+          <div
+            style={{
+              display: "flex",
+              gap: "25px",
+              alignItems: "center",
+            }}
+            className="desktop-nav"
+          >
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                style={{
+                  color: "#e5e7eb",
+                  textDecoration: "none",
+                  fontSize: "16px",
+                  transition: "color 0.3s",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.color = "#fbbf24")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.color = "#e5e7eb")
+                }
+              >
+                {link.label}
+              </a>
+            ))}
           </div>
 
-          {/* Input */}
-          <div style={{ padding: 12, borderTop: "1px solid #222", display: "flex", flexDirection: "column", gap: 8 }}>
-            {!chatName && (
+          {/* Бургер для мобильного */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#fbbf24",
+              fontSize: "28px",
+              cursor: "pointer",
+              display: "none",
+            }}
+            className="mobile-menu-btn"
+          >
+            {mobileMenuOpen ? "✕" : "☰"}
+          </button>
+        </div>
+
+        {/* Мобильное меню */}
+        {mobileMenuOpen && (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "15px",
+              padding: "20px",
+              background: "#0a0f1a",
+              borderTop: "1px solid #1e2d3d",
+            }}
+          >
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                style={{
+                  color: "#e5e7eb",
+                  textDecoration: "none",
+                  fontSize: "18px",
+                  padding: "8px 0",
+                }}
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+        )}
+      </nav>
+
+      {/* ============ HERO ============ */}
+      <section
+        id="home"
+        style={{
+          ...sectionPadding,
+          paddingTop: "150px",
+          textAlign: "center",
+          background:
+            "linear-gradient(135deg, #0a0f1a 0%, #111827 50%, #0a0f1a 100%)",
+        }}
+      >
+        <div style={maxWidth}>
+          <h1
+            style={{
+              fontSize: "52px",
+              fontWeight: "bold",
+              color: "#fbbf24",
+              marginBottom: "20px",
+              lineHeight: 1.2,
+            }}
+          >
+            {t.hero?.title || "Abatur Brothers Ministries"}
+          </h1>
+          <p
+            style={{
+              fontSize: "20px",
+              color: "#9ca3af",
+              maxWidth: "600px",
+              margin: "0 auto 40px",
+            }}
+          >
+            {t.hero?.subtitle ||
+              "Несём свет и надежду в мир. Служение, вера, единство."}
+          </p>
+          <div style={{ display: "flex", gap: "15px", justifyContent: "center", flexWrap: "wrap" }}>
+            <a
+              href="#about"
+              style={{
+                background: "#fbbf24",
+                color: "#0a0f1a",
+                padding: "14px 32px",
+                borderRadius: "8px",
+                textDecoration: "none",
+                fontWeight: "bold",
+                fontSize: "16px",
+                transition: "transform 0.2s",
+              }}
+            >
+              {t.hero?.cta || "Узнать больше"}
+            </a>
+            <a
+              href="#contacts"
+              style={{
+                border: "2px solid #fbbf24",
+                color: "#fbbf24",
+                padding: "14px 32px",
+                borderRadius: "8px",
+                textDecoration: "none",
+                fontWeight: "bold",
+                fontSize: "16px",
+                transition: "background 0.3s",
+              }}
+            >
+              {t.hero?.contact || "Связаться"}
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ============ О НАС ============ */}
+      <section id="about" style={{ ...sectionPadding, background: "#111827" }}>
+        <div style={maxWidth}>
+          <h2 style={sectionTitle}>{t.about?.title || "О нас"}</h2>
+          <p
+            style={{
+              fontSize: "18px",
+              color: "#9ca3af",
+              maxWidth: "800px",
+              margin: "0 auto",
+              lineHeight: 1.8,
+              textAlign: "center",
+            }}
+          >
+            {t.about?.description ||
+              "Мы — братья, объединённые верой и призванием служить Богу и людям. Наше служение началось с простого желания помогать людям с ограниченными возможностями и нести Слово Божье во все концы земли."}
+          </p>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+              gap: "30px",
+              marginTop: "50px",
+            }}
+          >
+            {[
+              {
+                icon: "🙏",
+                title: t.about?.values?.prayer || "Молитва",
+                desc: t.about?.values?.prayerDesc || "Молитва — основа нашего служения",
+              },
+              {
+                icon: "📖",
+                title: t.about?.values?.word || "Слово",
+                desc: t.about?.values?.wordDesc || "Проповедь и изучение Библии",
+              },
+              {
+                icon: "🤝",
+                title: t.about?.values?.unity || "Единство",
+                desc: t.about?.values?.unityDesc || "Вместе мы сильнее",
+              },
+            ].map((item, i) => (
+              <div
+                key={i}
+                style={{
+                  ...cardStyle,
+                  textAlign: "center",
+                  transition: "transform 0.3s",
+                }}
+              >
+                <div style={{ fontSize: "48px", marginBottom: "15px" }}>
+                  {item.icon}
+                </div>
+                <h3 style={{ color: "#fbbf24", marginBottom: "10px" }}>
+                  {item.title}
+                </h3>
+                <p style={{ color: "#9ca3af", fontSize: "15px" }}>
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ СОБЫТИЯ ============ */}
+      <section id="events" style={{ ...sectionPadding, background: "#0a0f1a" }}>
+        <div style={maxWidth}>
+          <h2 style={sectionTitle}>{t.events?.title || "События"}</h2>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+              gap: "30px",
+            }}
+          >
+            {[
+              {
+                date: "15.06.2025",
+                title: t.events?.items?.[0]?.title || "Вечер молитвы",
+                desc: t.events?.items?.[0]?.desc || "Совместная молитва и поклонение",
+              },
+              {
+                date: "22.06.2025",
+                title: t.events?.items?.[1]?.title || "Библейский семинар",
+                desc: t.events?.items?.[1]?.desc || "Изучение книги Притчей",
+              },
+              {
+                date: "29.06.2025",
+                title: t.events?.items?.[2]?.title || "Молодёжная встреча",
+                desc: t.events?.items?.[2]?.desc || "Общение и библейское study",
+              },
+            ].map((event, i) => (
+              <div key={i} style={cardStyle}>
+                <div
+                  style={{
+                    color: "#fbbf24",
+                    fontSize: "14px",
+                    marginBottom: "10px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {event.date}
+                </div>
+                <h3
+                  style={{
+                    color: "#e5e7eb",
+                    marginBottom: "8px",
+                    fontSize: "20px",
+                  }}
+                >
+                  {event.title}
+                </h3>
+                <p style={{ color: "#9ca3af", fontSize: "15px" }}>
+                  {event.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ КОМАНДА ============ */}
+      <section id="team" style={{ ...sectionPadding, background: "#111827" }}>
+        <div style={maxWidth}>
+          <h2 style={sectionTitle}>{t.team?.title || "Наша команда"}</h2>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+              gap: "30px",
+            }}
+          >
+            {[
+              {
+                name: t.team?.members?.[0]?.name || "Олег Ааатуров",
+                role: t.team?.members?.[0]?.role || "Основатель",
+              },
+              {
+                name: t.team?.members?.[1]?.name || "Всеволод Абатуров",
+                role: t.team?.members?.[1]?.role || "Основатель",
+              },
+            ].map((member, i) => (
+              <div
+                key={i}
+                style={{ ...cardStyle, textAlign: "center" }}
+              >
+                <div
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    borderRadius: "50%",
+                    background: "#1e2d3d",
+                    margin: "0 auto 15px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "40px",
+                  }}
+                >
+                  👤
+                </div>
+                <h3 style={{ color: "#fbbf24", marginBottom: "5px" }}>
+                  {member.name}
+                </h3>
+                <p style={{ color: "#9ca3af" }}>{member.role}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ МИССИЯ ============ */}
+      <section id="mission" style={{ ...sectionPadding, background: "#0a0f1a" }}>
+        <div style={maxWidth}>
+          <h2 style={sectionTitle}>{t.mission?.title || "Наша миссия"}</h2>
+          <p
+            style={{
+              fontSize: "18px",
+              color: "#9ca3af",
+              maxWidth: "800px",
+              margin: "0 auto",
+              lineHeight: 1.8,
+              textAlign: "center",
+            }}
+          >
+            {t.mission?.description ||
+              "Наша миссия — нести свет Евангелия каждому человеку, поддерживать людей с ограниченными возможностями, нуждающихся и созидать общество на принципах любви и христианской веры."}
+          </p>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+              gap: "30px",
+              marginTop: "50px",
+              textAlign: "center",
+            }}
+          >
+            {/*[
+              { num: "100+", label: t.mission?.stats?.[0]?.label || "Людей" },
+              { num: "10+", label: t.mission?.stats?.[1]?.label || "Проектов" },
+              { num: "5+", label: t.mission?.stats?.[2]?.label || "Стран" },
+              { num: "∞", label: t.mission?.stats?.[3]?.label || "Любовь" },
+            ].map((stat, i) => (
+              <div key={i}>
+                <div
+                  style={{
+                    fontSize: "42px",
+                    fontWeight: "bold",
+                    color: "#fbbf24",
+                  }}
+                >
+                  {stat.num}
+                </div>
+                <div style={{ color: "#9ca3af", marginTop: "8px" }}>
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+              {/* Статистика скрыта */}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ МОЛИТВЕННАЯ НУЖДА ============ */}
+      <section
+        id="prayer"
+        style={{ ...sectionPadding, background: "#111827" }}
+      >
+        <div style={maxWidth}>
+          <h2 style={sectionTitle}>
+            {t.prayerRequest?.title || "Молитвенная нужда"}
+          </h2>
+          <p
+            style={{
+              color: "#9ca3af",
+              textAlign: "center",
+              marginBottom: "30px",
+              fontSize: "16px",
+            }}
+          >
+            {t.prayerRequest?.subtitle ||
+              "Поделитесь своей молитвенной нуждой, и мы будем молиться за вас"}
+          </p>
+          <div
+            style={{
+              maxWidth: "500px",
+              margin: "0 auto",
+              ...cardStyle,
+            }}
+          >
+            {!prayerAnonymous && (
               <input
                 type="text"
-                placeholder={t.chat.namePlaceholder}
-                value={chatName}
-                onChange={(e: any) => setChatName(e.target.value)}
-                style={{ width: "100%", padding: "10px 12px", backgroundColor: "#0a0a0a", border: "1px solid #333", borderRadius: 8, color: "#fff", fontSize: 13, outline: "none" }}
+                placeholder={
+                  t.prayerRequest?.namePlaceholder || "Ваше имя"
+                }
+                value={prayerName}
+                onChange={(e) => setPrayerName(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "12px 16px",
+                  borderRadius: "8px",
+                  border: "1px solid #1e2d3d",
+                  background: "#0a0f1a",
+                  color: "#e5e7eb",
+                  marginBottom: "15px",
+                  fontSize: "16px",
+                  boxSizing: "border-box" as const,
+                }}
               />
             )}
-            <div style={{ display: "flex", gap: 8 }}>
+            <textarea
+              placeholder={
+                t.prayerRequest?.requestPlaceholder || "Ваша молитвенная нужда"
+              }
+              value={prayerRequest}
+              onChange={(e) => setPrayerRequest(e.target.value)}
+              rows={4}
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                borderRadius: "8px",
+                border: "1px solid #1e2d3d",
+                background: "#0a0f1a",
+                color: "#e5e7eb",
+                marginBottom: "15px",
+                fontSize: "16px",
+                resize: "vertical" as const,
+                boxSizing: "border-box" as const,
+              }}
+            />
+            <label
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                color: "#9ca3af",
+                marginBottom: "15px",
+                cursor: "pointer",
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={prayerAnonymous}
+                onChange={(e) => setPrayerAnonymous(e.target.checked)}
+              />
+              {t.prayerRequest?.anonymous || "Отправить анонимно"}
+            </label>
+            <button
+              onClick={handleSubmitPrayer}
+              disabled={prayerStatus === "sending"}
+              style={{
+                width: "100%",
+                padding: "14px",
+                borderRadius: "8px",
+                border: "none",
+                background: "#fbbf24",
+                color: "#0a0f1a",
+                fontWeight: "bold",
+                fontSize: "16px",
+                cursor: prayerStatus === "sending" ? "wait" : "pointer",
+                transition: "opacity 0.3s",
+              }}
+            >
+              {prayerStatus === "sending"
+                ? "Отправка..."
+                : t.prayerRequest?.submit || "Отправить просьбу"}
+            </button>
+            {prayerStatus === "success" && (
+              <p style={{ color: "#34d399", marginTop: "15px", textAlign: "center" }}>
+                {t.prayerRequest?.success ||
+                  "Ваша просьба отправлена. Мы будем молиться за вас!"}
+              </p>
+            )}
+            {prayerStatus === "error" && (
+              <p style={{ color: "#f87171", marginTop: "15px", textAlign: "center" }}>
+                {t.prayerRequest?.error || "Ошибка отправки. Попробуйте позже."}
+              </p>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ КОНТАКТЫ ============ */}
+      <section
+        id="contacts"
+        style={{ ...sectionPadding, background: "#0a0f1a" }}
+      >
+        <div style={maxWidth}>
+          <h2 style={sectionTitle}>
+            {t.contacts?.title || "Контакты"}
+          </h2>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+              gap: "30px",
+            }}
+          >
+            {/* Форма */}
+            <div style={cardStyle}>
               <input
                 type="text"
-                placeholder={t.chat.messagePlaceholder}
-                value={chatMsg}
-                onChange={(e: any) => setChatMsg(e.target.value)}
-                onKeyDown={(e: any) => e.key === "Enter" && sendChatMessage()}
-                style={{ flex: 1, padding: "10px 12px", backgroundColor: "#0a0a0a", border: "1px solid #333", borderRadius: 8, color: "#fff", fontSize: 13, outline: "none" }}
+                placeholder={
+                  t.contacts?.namePlaceholder || "Ваше имя"
+                }
+                value={contactName}
+                onChange={(e) => setContactName(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "12px 16px",
+                  borderRadius: "8px",
+                  border: "1px solid #1e2d3d",
+                  background: "#0a0f1a",
+                  color: "#e5e7eb",
+                  marginBottom: "15px",
+                  fontSize: "16px",
+                  boxSizing: "border-box" as const,
+                }}
               />
-              <button onClick={sendChatMessage} disabled={chatStatus === "sending"} style={{ padding: "10px 16px", backgroundColor: "#d4af37", border: "none", borderRadius: 8, color: "#000", fontWeight: "bold", fontSize: 13, cursor: "pointer" }}>
-                {chatStatus === "sending" ? "..." : "➤"}
-              </button>
+              <textarea
+                placeholder={
+                  t.contacts?.messagePlaceholder || "Ваше сообщение"
+                }
+                value={contactMessage}
+                onChange={(e) => setContactMessage(e.target.value)}
+                rows={4}
+                style={{
+                  width: "100%",
+                  padding: "12px 16px",
+                  borderRadius: "8px",
+                  border: "1px solid #1e2d3d",
+                  background: "#0a0f1a",
+                  color: "#e5e7eb",
+                  marginBottom: "15px",
+                  fontSize: "16px",
+                  resize: "vertical" as const,
+                  boxSizing: "border-box" as const,
+                }}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  flexWrap: "wrap",
+                }}
+              >
+                <button
+                  onClick={openWhatsApp}
+                  style={{
+                    flex: 1,
+                    padding: "12px",
+                    borderRadius: "8px",
+                    border: "none",
+                    background: "#25D366",
+                    color: "#fff",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    minWidth: "100px",
+                  }}
+                >
+                  WhatsApp
+                </button>
+                <button
+                  onClick={openTelegram}
+                  style={{
+                    flex: 1,
+                    padding: "12px",
+                    borderRadius: "8px",
+                    border: "none",
+                    background: "#0088cc",
+                    color: "#fff",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    minWidth: "100px",
+                  }}
+                >
+                  Telegram
+                </button>
+                <button
+                  onClick={openEmail}
+                  style={{
+                    flex: 1,
+                    padding: "12px",
+                    borderRadius: "8px",
+                    border: "none",
+                    background: "#fbbf24",
+                    color: "#0a0f1a",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    minWidth: "100px",
+                  }}
+                >
+                  Email
+                </button>
+              </div>
+            </div>
+
+            {/* Информация */}
+            <div style={cardStyle}>
+              <h3
+                style={{
+                  color: "#fbbf24",
+                  marginBottom: "20px",
+                  fontSize: "20px",
+                }}
+              >
+              {t.contacts?.heading || "Свяжитесь с нами"}
+              </h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+                <p style={{ color: "#9ca3af" }}>
+                  📧 info@abaturministries.org
+                </p>
+                <p style={{ color: "#9ca3af" }}>
+                  📱 +7 (902) 648-9672
+                </p>
+                <p style={{ color: "#9ca3af" }}>
+                  🌐 abaturministry.org
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      )}
+      </section>
+
+      {/* ============ КОММЕНТАРИИ ============ */}
+      <section
+        id="comments"
+        style={{ ...sectionPadding, background: "#111827" }}
+      >
+        <div style={maxWidth}>
+          <h2 style={sectionTitle}>
+            {t.comments?.title || "Отзывы"}
+          </h2>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+              gap: "30px",
+            }}
+          >
+            {/* Список комментариев */}
+            <div>
+              {comments.length > 0 ? (
+                comments.map((c: any, i: number) => (
+                  <div
+                    key={i}
+                    style={{
+                      ...cardStyle,
+                      marginBottom: "15px",
+                      padding: "20px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        color: "#fbbf24",
+                        fontWeight: "bold",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      {c.name}
+                    </div>
+                    <p style={{ color: "#9ca3af", fontSize: "15px" }}>
+                      {c.text}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p style={{ color: "#9ca3af", textAlign: "center" }}>
+                  {t.comments?.empty || "Пока нет отзывов. Будьте первым!"}
+                </p>
+              )}
+            </div>
+
+            {/* Форма комментария */}
+            <div style={cardStyle}>
+              <h3
+                style={{
+                  color: "#fbbf24",
+                  marginBottom: "20px",
+                  fontSize: "18px",
+                }}
+              >
+                {t.comments?.formTitle || "Оставить отзыв"}
+              </h3>
+              <input
+                type="text"
+                placeholder={
+                  t.comments?.namePlaceholder || "Ваше имя"
+                }
+                value={commentName}
+                onChange={(e) => setCommentName(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "12px 16px",
+                  borderRadius: "8px",
+                  border: "1px solid #1e2d3d",
+                  background: "#0a0f1a",
+                  color: "#e5e7eb",
+                  marginBottom: "15px",
+                  fontSize: "16px",
+                  boxSizing: "border-box" as const,
+                }}
+              />
+              <textarea
+                placeholder={
+                  t.comments?.textPlaceholder || "Ваш отзыв"
+                }
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                rows={4}
+                style={{
+                  width: "100%",
+                  padding: "12px 16px",
+                  borderRadius: "8px",
+                  border: "1px solid #1e2d3d",
+                  background: "#0a0f1a",
+                  color: "#e5e7eb",
+                  marginBottom: "15px",
+                  fontSize: "16px",
+                  resize: "vertical" as const,
+                  boxSizing: "border-box" as const,
+                }}
+              />
+              <button
+                onClick={handleSubmitComment}
+                disabled={commentStatus === "sending"}
+                style={{
+                  width: "100%",
+                  padding: "14px",
+                  borderRadius: "8px",
+                  border: "none",
+                  background: "#fbbf24",
+                  color: "#0a0f1a",
+                  fontWeight: "bold",
+                  fontSize: "16px",
+                  cursor: commentStatus === "sending" ? "wait" : "pointer",
+                }}
+              >
+                {commentStatus === "sending"
+                  ? "Отправка..."
+                  : t.comments?.submit || "Отправить"}
+              </button>
+              {commentStatus === "success" && (
+                <p style={{ color: "#34d399", marginTop: "15px", textAlign: "center" }}>
+                  {t.comments?.success || "Спасибо за ваш отзыв!"}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============ ПИСАНИЕ ============ */}
+      <section
+        id="scripture"
+        style={{ ...sectionPadding, background: "#0a0f1a", textAlign: "center" }}
+      >
+        <div style={maxWidth}>
+          <h2 style={sectionTitle}>
+            {t.scripture?.title || "Слово Божье"}
+          </h2>
+          <blockquote
+            style={{
+              fontSize: "22px",
+              color: "#fbbf24",
+              fontStyle: "italic",
+              maxWidth: "700px",
+              margin: "0 auto",
+              lineHeight: 1.6,
+              borderLeft: "4px solid #fbbf24",
+              paddingLeft: "20px",
+              textAlign: "left",
+            }}
+          >
+            &ldquo;{t.scripture?.verse ||
+              "Ибо так возлюбил Бог мир, что отдал Сына Своего Единородного, дабы всякий верующий в Него, не погиб, но имел жизнь вечную."}&rdquo;
+          </blockquote>
+          <p
+            style={{
+              color: "#9ca3af",
+              marginTop: "20px",
+              fontSize: "16px",
+            }}
+          >
+            — {t.scripture?.reference || "Иоанна 3:16"}
+          </p>
+        </div>
+      </section>
+
+      {/* ============ FOOTER ============ */}
+      <footer
+        style={{
+          background: "#111827",
+          padding: "40px 20px",
+          borderTop: "1px solid #1e2d3d",
+        }}
+      >
+        <div style={maxWidth}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+              gap: "30px",
+            }}
+          >
+            <div>
+              <h3 style={{ color: "#fbbf24", marginBottom: "15px" }}>
+                Abatur Brothers
+              </h3>
+              <p style={{ color: "#9ca3af", fontSize: "14px" }}>
+                {t.footer?.description ||
+                  "Служение веры и надежды для всех."}
+              </p>
+            </div>
+            <div>
+              <h3 style={{ color: "#fbbf24", marginBottom: "15px" }}>
+                {t.footer?.links || "Ссылки"}
+              </h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <a
+                  href="#home"
+                  style={{ color: "#9ca3af", textDecoration: "none", fontSize: "14px" }}
+                >
+                  {t.nav?.home || "Главная"}
+                </a>
+                <a
+                  href="#about"
+                  style={{ color: "#9ca3af", textDecoration: "none", fontSize: "14px" }}
+                >
+                  {t.nav?.about || "О нас"}
+                </a>
+                <a
+                  href="/library"
+                  style={{ color: "#9ca3af", textDecoration: "none", fontSize: "14px" }}
+                >
+                  {t.nav?.library || "Библиотека"}
+                </a>
+              </div>
+            </div>
+            <div>
+              <h3 style={{ color: "#fbbf24", marginBottom: "15px" }}>
+                {t.footer?.social || "Соцсети"}
+              </h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <a
+                  href="https://t.me/Abaturministry_bot"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "#9ca3af", textDecoration: "none", fontSize: "14px" }}
+                >
+                  Telegram
+                </a>
+                <a
+                  href="https://wa.me/15551234567"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "#9ca3af", textDecoration: "none", fontSize: "14px" }}
+                >
+                  WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+          <div
+            style={{
+              marginTop: "30px",
+              paddingTop: "20px",
+              borderTop: "1px solid #1e2d3d",
+              textAlign: "center",
+              color: "#9ca3af",
+              fontSize: "14px",
+            }}
+          >
+            &copy; {new Date().getFullYear()} Abatur Brothers Ministries.{" "}
+            {t.footer?.rights || "Все права защищены."}
+          </div>
+        </div>
+      </footer>
+
+      {/* ============ ЧАТ ВИДЖЕТ ============ */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          zIndex: 999,
+        }}
+      >
+        {chatOpen && (
+          <div
+            style={{
+              width: "320px",
+              height: "400px",
+              background: "#111827",
+              border: "1px solid #1e2d3d",
+              borderRadius: "12px",
+              marginBottom: "10px",
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+              boxShadow: "0 10px 40px rgba(0,0,0,0.5)",
+            }}
+          >
+            <div
+              style={{
+                background: "#fbbf24",
+                color: "#0a0f1a",
+                padding: "12px 16px",
+                fontWeight: "bold",
+                fontSize: "16px",
+              }}
+            >
+              {t.chat?.title || "Чат"}
+            </div>
+            <div
+              style={{
+                flex: 1,
+                overflowY: "auto",
+                padding: "15px",
+              }}
+            >
+              {chatMessages.length === 0 && (
+                <p style={{ color: "#9ca3af", fontSize: "14px", textAlign: "center", marginTop: "50px" }}>
+                  {t.chat?.greeting || "Здравствуйте! Чем можем помочь?"}
+                </p>
+              )}
+              {chatMessages.map((msg, i) => (
+                <div
+                  key={i}
+                  style={{
+                    textAlign: msg.role === "user" ? "right" : "left",
+                    marginBottom: "10px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "inline-block",
+                      maxWidth: "80%",
+                      padding: "8px 12px",
+                      borderRadius: "12px",
+                      fontSize: "14px",
+                      background:
+                        msg.role === "user" ? "#fbbf24" : "#1e2d3d",
+                      color: msg.role === "user" ? "#0a0f1a" : "#e5e7eb",
+                    }}
+                  >
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                padding: "10px",
+                borderTop: "1px solid #1e2d3d",
+              }}
+            >
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && sendChatMessage()}
+                placeholder={t.chat?.placeholder || "Сообщение..."}
+                style={{
+                  flex: 1,
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "1px solid #1e2d3d",
+                  background: "#0a0f1a",
+                  color: "#e5e7eb",
+                  fontSize: "14px",
+                }}
+              />
+              <button
+                onClick={sendChatMessage}
+                style={{
+                  marginLeft: "8px",
+                  padding: "10px 16px",
+                  borderRadius: "8px",
+                  border: "none",
+                  background: "#fbbf24",
+                  color: "#0a0f1a",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                }}
+              >
+                ➤
+              </button>
+            </div>
+          </div>
+        )}
+        <button
+          onClick={() => setChatOpen(!chatOpen)}
+          style={{
+            width: "60px",
+            height: "60px",
+            borderRadius: "50%",
+            border: "none",
+            background: "#fbbf24",
+            color: "#0a0f1a",
+            fontSize: "28px",
+            cursor: "pointer",
+            boxShadow: "0 4px 20px rgba(251, 191, 36, 0.4)",
+            transition: "transform 0.2s",
+          }}
+        >
+          {chatOpen ? "✕" : "💬"}
+        </button>
+      </div>
     </div>
   );
 }
