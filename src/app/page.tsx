@@ -209,7 +209,7 @@ export default function Home() {
       {/* ABOUT */}
       <section id="about" style={{ padding: "80px 20px", maxWidth: 1000, margin: "0 auto" }}>
         <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 50 }}>{t.about.heading}</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 25 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 25 }}>
           {[
             { title: t.about.faith.title, text: t.about.faith.text, icon: "✝️" },
             { title: t.about.ministry.title, text: t.about.ministry.text, icon: "🕊️" },
@@ -247,22 +247,18 @@ export default function Home() {
       </section>
 
       {/* TEAM */}
-      <section id="team" style={{ padding: "80px 20px", maxWidth: 1000, margin: "0 auto" }}>
+      <section id="team" style={{ padding: "200px 20px", maxWidth: 1000, margin: "0 auto" }}>
         <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 50 }}>{t.team.heading}</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 25 }}>
-          {t.team.members.map((member: any) => (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(460px, 1fr))", gap: 50 }}>
+          {t.team.members.map((member: any, index: number) => (
             <div key={member.name} style={{
               backgroundColor: "#111", border: "1px solid #222", borderRadius: 12,
               padding: "30px", textAlign: "center"
             }}>
-              <div style={{
-                width: 80, height: 80, borderRadius: "50%", backgroundColor: "#1a1a0a",
-                border: "2px solid #d4af37", margin: "0 auto 15px",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 24, color: "#d4af37", fontWeight: "bold"
-              }}>
-                {member.name.split(" ").map((n: string) => n[0]).join("")}
-              </div>
+              <img src={`/founder${index + 1}.jpg`} alt={member.name} style={{
+                width: "100%", height: 600, objectFit: "cover",
+                borderRadius: "12px 12px 0 0", marginBottom: 15
+              }} />
               <h3 style={{ color: "#d4af37", marginBottom: 5 }}>{member.name}</h3>
               <p style={{ color: "#888", fontSize: 13, marginBottom: 10 }}>{member.role}</p>
               <p style={{ color: "#aaa", fontSize: 14, lineHeight: 1.6 }}>{member.desc}</p>
@@ -297,7 +293,7 @@ top: "50%", right: 10, transform: "translateY(-50%)", backgroundColor: "rgba(0,0
             ))}
           </div>
         </div>
-        <div style={{ maxWidth: 1500, margin: "30px auto 0", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 15 }}>
+        <div style={{ maxWidth: 1500, margin: "30px auto 0", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(380px, 1fr))", gap: 15 }}>
           {t.mission.items.map((item: any) => (
             <div key={item} style={{ padding: "15px", backgroundColor: "#111", border: "1px solid #222", borderRadius: 8, color: "#ccc", fontSize: 14 }}>
               ✦ {item}
