@@ -35,6 +35,10 @@ export const translations = {
         title: "Единство",
         text: "В единстве — сила. Мы строим сообщество, где каждый важен и каждый услышан.",
       },
+      worship: {
+        title: "Поклонение",
+        text: "Поклонение — наше призвание. Мы прославляем Бога в песне, молитве и служении ближнему.",
+      },
     },
     events: {
       heading: "События",
@@ -42,6 +46,7 @@ export const translations = {
         { date: "15 июня", title: "Вечер молитвы", tag: "Молитва" },
         { date: "26 июня", title: "Презентация книги", tag: "Книги" },
         { date: "29 июня", title: "Библейское изучение", tag: "Обучение" },
+        { date: "17 июля", title: "Онлайн-общение", tag: "Онлайн" },
       ],
     },
     team: {
@@ -86,8 +91,8 @@ export const translations = {
         facebook: "Facebook",
       },
       info: [
-        { label: "WhatsApp", value: "+1 (555) 123-4567" },
-        { label: "Telegram", value: "@abaturministries" },
+        { label: "WhatsApp", value: "+7 (902) 648-9672" },
+        { label: "Telegram", value: "t.me/Abaturministry_bot" },
         { label: "Email", value: "info@abaturministries.org" },
         { label: "Facebook", value: "Abatur Brothers" },
       ],
@@ -178,6 +183,10 @@ export const translations = {
       unity: {
         title: "Unity",
         text: "There is strength in unity. We build a community where everyone matters and everyone is heard.",
+      },
+      worship: {
+        title: "Worship",
+        text: "Worship is our calling. We glorify God in song, prayer, and serving our neighbors.",
       },
     },
     events: {

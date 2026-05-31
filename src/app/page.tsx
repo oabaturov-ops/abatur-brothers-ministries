@@ -25,12 +25,17 @@ export default function Home() {
 
   // Чат-виджет
   const [chatOpen, setChatOpen] = useState(false);
+  const [prayerName, setPrayerName] = useState("");
+  const [prayerText, setPrayerText] = useState("");
+  const [prayerAnonymous, setPrayerAnonymous] = useState(false);
+  const [prayerStatus, setPrayerStatus] = useState("idle");
   const [chatName, setChatName] = useState("");
   const [chatMsg, setChatMsg] = useState("");
   const [chatStatus, setChatStatus] = useState("idle");
 
     const navLinks = [
     { href: "/", label: t.nav.home },
+    { href: "#prayer", label: t.nav.prayer },
     { href: "#about", label: t.nav.about },
     { href: "#events", label: t.nav.events },
     { href: "#team", label: t.nav.team },
@@ -80,22 +85,49 @@ export default function Home() {
     setTimeout(() => setChatStatus("idle"), 3000);
   }
 
+  async function sendPrayerRequest() {
+    if (!prayerText.trim()) return;
+    setPrayerStatus("sending");
+    try {
+      const res = await fetch("/api/telegram", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: prayerAnonymous ? "Аноним" : prayerName,
+          message: `[МОЛИТВЕННАЯ НУЖДА]\n${prayerText}`,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setPrayerStatus("success");
+        setPrayerName("");
+        setPrayerText("");
+        setPrayerAnonymous(false);
+      } else {
+        setPrayerStatus("error");
+      }
+    } catch {
+      setPrayerStatus("error");
+    }
+    setTimeout(() => setPrayerStatus("idle"), 4000);
+  }
+
   return (
     <div style={{ backgroundColor: "#0a0a0a", color: "#fff", minHeight: "100vh" }}>
       {/* NAVIGATION */}
-      <nav style={{
+            <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
         backgroundColor: "rgba(10,10,10,0.9)", backdropFilter: "blur(10px)",
-        borderBottom: "1px solid #222", padding: "15px 30px",
+        borderBottom: "1px solid #222", padding: "10px 20px",
         display: "flex", justifyContent: "space-between", alignItems: "center"
       }}>
         <a href="#" style={{ color: "#d4af37", fontSize: 20, fontWeight: "bold", textDecoration: "none", display: "flex", alignItems: "center", gap: 10 }}>
-          <img src="/favicon.png" alt="logo" style={{ width: 100, height: 100, borderRadius: "50%" }} />
+          <img src="/favicon.png" alt="logo" style={{ width: 44, height: 44, borderRadius: "50%" }} />
           {t.nav.brand}
         </a>
 
         {/* Desktop menu */}
-        <div style={{ display: "flex", gap: 25, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap" }}>
           {navLinks.map((link) => (
             <a
               key={link.href}
@@ -207,13 +239,14 @@ export default function Home() {
       </section>
 
       {/* ABOUT */}
-      <section id="about" style={{ padding: "80px 20px", maxWidth: 1000, margin: "0 auto" }}>
+      <section id="about" style={{ padding: "80px 20px", maxWidth: 700, margin: "0 auto" }}>
         <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 50 }}>{t.about.heading}</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 25 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 25 }}>
           {[
             { title: t.about.faith.title, text: t.about.faith.text, icon: "✝️" },
             { title: t.about.ministry.title, text: t.about.ministry.text, icon: "🕊️" },
             { title: t.about.unity.title, text: t.about.unity.text, icon: "🤝" },
+            { title: t.about.worship.title, text: t.about.worship.text, icon: "🎵" },
           ].map((item) => (
             <div key={item.title} style={{
               backgroundColor: "#111", border: "1px solid #222", borderRadius: 12,
@@ -230,7 +263,7 @@ export default function Home() {
       {/* EVENTS */}
       <section id="events" style={{ padding: "80px 20px", backgroundColor: "#0d0d0d" }}>
         <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 50 }}>{t.events.heading}</h2>
-        <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 25 }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 25, maxWidth: 650, margin: "0 auto" }}>
           {t.events.items.map((event: any) => (
             <div key={event.title} style={{
               backgroundColor: "#111", border: "1px solid #222", borderRadius: 12, padding: "25px"
@@ -247,20 +280,20 @@ export default function Home() {
       </section>
 
       {/* TEAM */}
-      <section id="team" style={{ padding: "200px 20px", maxWidth: 1000, margin: "0 auto" }}>
+      <section id="team" style={{ padding: "200px 20px", maxWidth: 700, margin: "0 auto" }}>
         <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 50 }}>{t.team.heading}</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(460px, 1fr))", gap: 50 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 20}}>
           {t.team.members.map((member: any, index: number) => (
             <div key={member.name} style={{
               backgroundColor: "#111", border: "1px solid #222", borderRadius: 12,
               padding: "30px", textAlign: "center"
             }}>
               <img src={`/founder${index + 1}.jpg`} alt={member.name} style={{
-                width: "100%", height: 600, objectFit: "cover",
+                width: "100%", height: 300, objectFit: "cover",
                 borderRadius: "12px 12px 0 0", marginBottom: 15
               }} />
               <h3 style={{ color: "#d4af37", marginBottom: 5 }}>{member.name}</h3>
-              <p style={{ color: "#888", fontSize: 13, marginBottom: 10 }}>{member.role}</p>
+              <p style={{ color: "#888", fontSize: 16, marginBottom: 10 }}>{member.role}</p>
               <p style={{ color: "#aaa", fontSize: 14, lineHeight: 1.6 }}>{member.desc}</p>
             </div>
           ))}
@@ -316,7 +349,7 @@ top: "50%", right: 10, transform: "translateY(-50%)", backgroundColor: "rgba(0,0
             const message = (e.target as any).elements.cmessage.value;
             const text = `Name: ${name}\nEmail: ${email}\n\n${message}`;
 
-            const WHATSAPP_NUMBER = "15551234567";
+            const WHATSAPP_NUMBER = "+79026489672";
             const TELEGRAM_USER = "Abaturministry_bot";
             const EMAIL_ADDRESS = "info@abaturministries.org";
             const FACEBOOK_PAGE = "AbaturBrothersMinistries";
@@ -487,6 +520,47 @@ top: "50%", right: 10, transform: "translateY(-50%)", backgroundColor: "rgba(0,0
         </div>
       </section>
 
+{/* PRAYER REQUEST */}
+      <section id="prayer" style={{ padding: "80px 20px", backgroundColor: "#0d0d0d" }}>
+        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 15 }}>{t.prayerRequest.title}</h2>
+        <p style={{ textAlign: "center", color: "#888", marginBottom: 30, maxWidth: 600, margin: "0 auto 30px" }}>{t.prayerRequest.subtitle}</p>
+        <form onSubmit={(e) => { e.preventDefault(); sendPrayerRequest(); }} style={{ maxWidth: 500, margin: "0 auto" }}>
+          {!prayerAnonymous && (
+            <input
+              type="text"
+              placeholder={t.prayerRequest.namePlaceholder}
+              value={prayerName}
+              onChange={(e: any) => setPrayerName(e.target.value)}
+              style={{ width: "100%", padding: "12px 14px", backgroundColor: "#111", border: "1px solid #333", borderRadius: 8, color: "#fff", fontSize: 14, marginBottom: 12, outline: "none" }}
+            />
+          )}
+          <textarea
+            placeholder={t.prayerRequest.requestPlaceholder}
+            value={prayerText}
+            onChange={(e: any) => setPrayerText(e.target.value)}
+            rows={4}
+            style={{ width: "100%", padding: "12px 14px", backgroundColor: "#111", border: "1px solid #333", borderRadius: 8, color: "#fff", fontSize: 14, marginBottom: 12, outline: "none", resize: "vertical", fontFamily: "inherit" }}
+          />
+          <label style={{ display: "flex", alignItems: "center", gap: 8, color: "#888", fontSize: 13, marginBottom: 16, cursor: "pointer" }}>
+            <input type="checkbox" checked={prayerAnonymous} onChange={(e: any) => setPrayerAnonymous(e.target.checked)} style={{ accentColor: "#d4af37" }} />
+            {t.prayerRequest.anonymous}
+          </label>
+          {prayerStatus === "success" && (
+            <p style={{ color: "#4ade80", marginBottom: 12, fontSize: 14 }}>{t.prayerRequest.success}</p>
+          )}
+          {prayerStatus === "error" && (
+            <p style={{ color: "#f87171", marginBottom: 12, fontSize: 14 }}>{t.prayerRequest.error}</p>
+          )}
+          <button type="submit" disabled={prayerStatus === "sending"} style={{
+            width: "100%", padding: "14px", backgroundColor: "#d4af37", color: "#000",
+            border: "none", borderRadius: 8, fontWeight: "bold", fontSize: 15,
+            cursor: "pointer", transition: "0.3s"
+          }}>
+            {prayerStatus === "sending" ? t.prayerRequest.sending : t.prayerRequest.submit}
+          </button>
+        </form>
+      </section>
+
       {/* SCRIPTURE */}
       <section style={{
         padding: "60px 20px", backgroundColor: "#0d0d0d",
@@ -503,7 +577,7 @@ top: "50%", right: 10, transform: "translateY(-50%)", backgroundColor: "rgba(0,0
         </div>
       </section>
 
-      {/* FOOTER */}
+        {/* FOOTER */}
       <footer style={{
         padding: "30px", textAlign: "center", borderTop: "1px solid #222",
         color: "#555", fontSize: 13
@@ -590,6 +664,7 @@ top: "50%", right: 10, transform: "translateY(-50%)", backgroundColor: "rgba(0,0
           </div>
         </div>
       )}
-    </div>
+
+      </div>
   );
 }
