@@ -239,7 +239,7 @@ export default function Home() {
       </section>
 
       {/* ABOUT */}
-      <section id="about" style={{ padding: "80px 20px", maxWidth: 700, margin: "0 auto" }}>
+      <section id="about" style={{ padding: "80px 20px", maxWidth: 650, margin: "0 auto" }}>
         <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 50 }}>{t.about.heading}</h2>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 25 }}>
           {[
@@ -263,7 +263,7 @@ export default function Home() {
       {/* EVENTS */}
       <section id="events" style={{ padding: "80px 20px", backgroundColor: "#0d0d0d" }}>
         <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 50 }}>{t.events.heading}</h2>
-        <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 25, maxWidth: 650, margin: "0 auto" }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 25 }}>
           {t.events.items.map((event: any) => (
             <div key={event.title} style={{
               backgroundColor: "#111", border: "1px solid #222", borderRadius: 12, padding: "25px"
