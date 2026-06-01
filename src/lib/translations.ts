@@ -13,6 +13,7 @@ export const translations = {
       comments: "Комментарии",
       home: "Главная",
       library: "Библиотека",
+      prayer: "Молитва",
     },
     hero: {
       title1: "Abatur Brothers",
@@ -162,6 +163,7 @@ export const translations = {
       comments: "Comments",
       home: "Home",
       library: "Library",
+      prayer: "Prayer",
     },
     hero: {
       title1: "Abatur Brothers",
