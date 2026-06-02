@@ -10,6 +10,9 @@ export default function BlogPage() {
   return (
     <div style={{ backgroundColor: "#0a0a0a", color: "#fff", minHeight: "100vh", paddingTop: 80 }}>
       <div style={{ maxWidth: 800, margin: "0 auto", padding: "40px 20px" }}>
+        <a href="/" style={{ color: "#d4af37", fontSize: 14, textDecoration: "none", marginBottom: 20, display: "inline-block" }}>
+          ← {lang === "ru" ? "На главную" : "Home"}
+        </a>
         <h1 style={{ color: "#d4af37", fontSize: 36, marginBottom: 10 }}>
           {lang === "ru" ? "Блог" : "Blog"}
         </h1>

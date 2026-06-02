@@ -14,20 +14,23 @@ export interface Post {
 }
 
 export const posts: Post[] = [
-  {
+    {
     id: 1,
-    slug: "sila-molitvy",
-    titleRu: "Сила молитвы: как Бог отвечает на наши просьбы",
-    titleEn: "The Power of Prayer: How God Answers Our Requests",
-    excerptRu: "Молитва — это не просто слова, это разговор с Творцом Вселенной. В этой статье мы рассмотрим, как молитва меняет обстоятельства и сердца людей.",
-    excerptEn: "Prayer is not just words, it is a conversation with the Creator of the Universe. In this article we explore how prayer changes circumstances and hearts.",
-    contentRu: `Молитва — один из самых мощных инструментов, данных человеку. Когда мы молимся, мы не просто произносим слова — мы вступаем в общение с Богом.\n\nМногие люди задают вопрос: "Почему Бог не отвечает на мои молитвы?" Ответ кроется в нескольких важных принципах.\n\nВо-первых, молитва должна быть искренней. Бог ищет не правильных формулировок, а честное сердце. Когда мы приходим к Нему такими, какие мы есть, Он отвечает.\n\nВо-вторых, вера играет ключевую роль. Иисус говорил: "Всё, чего ни будете просить в молитве, верьте, что получите, и будет вам" (Марка 11:24).\n\nВ-третьих, нужно уметь ждать. Ответ Бога может прийти не сразу, но Он всегда отвечает в своё время. Иногда ответом является не то, что мы просили, а то, что нам действительно нужно.\n\nПрактические шаги для укрепления молитвенной жизни:\n\n1. Выделяйте время каждый день для молитвы\n2. Начинайте с благодарности\n3. Молитесь за других людей\n4. Ведите молитвенный дневник\n5. Читайте Библию перед молитвой`,
-    contentEn: `Prayer is one of the most powerful tools given to humanity. When we pray, we don't just speak words — we enter into communion with God.\n\nMany people ask: "Why doesn't God answer my prayers?" The answer lies in several important principles.\n\nFirst, prayer must be sincere. God seeks not correct formulations, but an honest heart. When we come to Him as we are, He answers.\n\nSecond, faith plays a key role. Jesus said: "Whatever you ask for in prayer, believe that you have received it, and it will be yours" (Mark 11:24).\n\nThird, you need to know how to wait. God's answer may not come immediately, but He always answers in His time. Sometimes the answer is not what we asked for, but what we truly need.\n\nPractical steps for strengthening your prayer life:\n\n1. Set aside time each day for prayer\n2. Start with gratitude\n3. Pray for other people\n4. Keep a prayer journal\n5. Read the Bible before praying`,
-    date: "2025-01-15",
-    categoryRu: "Молитва",
-    categoryEn: "Prayer",
+    slug: "fakel",
+    titleRu: "Свет факела скорбящему",
+    titleEn: "Torchlight for the Grieving",
+    excerptRu: "Факел необходим тому, кто во мраке. Разберём о чём это",
+    excerptEn: "A torch is essential for those in darkness. Let's look at what that means.",
+    contentRu: `Так презрен по мыслям сидящего в покое факел, приготовленный для спотыкающихся ногами. (Иов.12:5)
+Мудрость, высказанная человеком, который проходил путь скорби. Не потому что он был убийцей или вором или мошенником. Нет. Это был вполне благочестивый и добропорядочный человек. Его звали Иов.\n\nЕго друзья, если так можно сказать, сидели с ним и вешали на него ярлыки беззакония, хотя "дружили" с ним много лет. Неужели они не знали его как человека? Видимо можно быть рядом с человеком, но не знать его. Но в контексте всей книги хочется другое сказать про этот отрывок из Библии. Приведённый выше отрывок можно изложить другими словами. Иов имеет ввиду, что зачем человеку факел, если он идёт по дороге жизни при свете. И ему непонятны поступки человека, который ищет факел, ведь жизнь прекрасна и удивительна и вокруг светит солнце. Но ищущий факел проходит нелегкий сезон в жизни, это сезон ночи, когда факел просто необходим. Очень интересная аллегория, образ из жизни. Не хотел бы я быть таким, который судит о человеке, который ищет факел. Я могу быть при свете дня, но не хочу судить того, кто проходит путь ночи.`,
+    contentEn: `How despised is a torch prepared for those who stumble with their feet, in the thoughts of him who sits quietly. (Job 12:5)
+Wisdom spoken by a man who walked the path of sorrow. Not because he was a murderer, a thief, or a fraud. No. He was a completely pious and upright man. His name was Job.\n\nHis friends, so to speak, sat with him and labeled him as a wicked man, even though they had been "friends" with him for many years. Didn't they really know him as a person? Apparently, one can be close to a person and still not know them. But in the context of the entire book, I want to say something else about this Bible passage. The above passage can be put differently. Job means why a person needs a torch if he walks the path of life by light. And he doesn't understand the actions of a person who seeks a torch, after all, life is beautiful and wonderful, and the sun shines all around. But the one seeking the torch goes through a difficult season in life, a season of darkness when the torch is absolutely necessary. A very interesting allegory, a true-life image. I wouldn't want to be the one judging the man seeking a torch. I can stand in the light of day, but I don't want to judge someone who walks the path of darkness.`,
+    date: "2025-06-01",
+    categoryRu: "Пост",
+    categoryEn: "Article",
     readTime: "5 мин",
   },
+
   {
     id: 2,
     slug: "vera-v-tyazhelye-momenty",
