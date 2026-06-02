@@ -23,11 +23,10 @@ export const books: Book[] = [
     descriptionEn: "Kenneth E. Hagin shows from the Bible how a person receives the baptism of the Holy Spirit.",
     category: "faith",
     coverUrl: "/covers/prayer.jpg",
-    pdfUrl: "/books/hagin-holy-spirit.pdf",
+    pdfUrl: "/books/klendennen-revival.pdf",
   },
 
-  {
-    id: 2,
+  {    id: 2,
     titleRu: "Восстановление сути пятидесятницы",
     titleEn: "Restoration of Pentecostal Essence",
     authorRu: "Б. Кленденнен",
