@@ -18,7 +18,7 @@ export const translations = {
     hero: {
       title1: "Abatur Brothers",
       titleHighlight: "Ministries",
-            subtitle: "... и узрит Его всякое око... (Откр.1:7). Сайт - Онлайн Служение. Sola scriptura (лат.) Только Писание.",
+            subtitle: "... и узрит Его всякое око... (Откр.1:7). Сайт - Онлайн Служение.",
       cta1: "Узнать больше",
       cta2: "Связаться с нами",
     },
@@ -54,14 +54,14 @@ export const translations = {
       heading: "Наша команда",
       members: [
         {
-          name: "Олег Абатуров",
-          role: "Основатель служения",
-          desc: "Призван нести Евангелие. Толкование снов на основании Библии согласно учению Джона Пола Джексона.",
-        },
-        {
           name: "Всеволод Абатуров",
           role: "Основатель служения",
           desc: "Призван учить Слову Божьему. Статьи, лекции, онлайн-встречи",
+        },
+        {
+          name: "Олег Абатуров",
+          role: "Основатель служения",
+          desc: "Призван проповедовать Евангелие. Толкование снов на основании Библии согласно учению Джона Пола Джексона.",
         },
       ],
     },
@@ -168,7 +168,7 @@ export const translations = {
     hero: {
       title1: "Abatur Brothers",
       titleHighlight: "Ministries",
-            subtitle: "...and every eye shall see Him... (Rev.1:7). Online Ministry. Sola scriptura.",
+            subtitle: "...and every eye shall see Him... (Rev.1:7). Online Ministry.",
       cta1: "Learn More",
       cta2: "Contact Us",
     },
@@ -203,14 +203,14 @@ export const translations = {
       heading: "Our Team",
       members: [
         {
-          name: "Oleg Abaturov",
-          role: "Founder",
-          desc: "The founder of the ministry. Evangelization. Interpretation of dreams based on the Bible according to the teachings of John Paul Jackson.",
-        },
-        {
           name: "Vsevolod Abaturov",
           role: "Founder",
-          desc: "The founder of the ministry. He is called to teach the Word of God. Articles, lectures, online meetings.",
+          desc: "Called to teach the Word of God. Articles, lectures, online meetings",
+        },
+        {
+          name: "Oleg Abaturov",
+          role: "Founder",
+          desc: "Called to Bring the Gospel. Dream Interpretation Based on the Bible According to the Teachings of John Paul Jackson.",
         },
       ],
     },
