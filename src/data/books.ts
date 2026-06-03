@@ -23,7 +23,7 @@ export const books: Book[] = [
     descriptionEn: "Kenneth E. Hagin shows from the Bible how a person receives the baptism of the Holy Spirit.",
     category: "faith",
     coverUrl: "/covers/prayer.jpg",
-    pdfUrl: "/books/klendennen-revival.pdf",
+    pdfUrl: "/books/hagin-holy-spirit.pdf",
   },
 
   {    id: 2,
@@ -37,28 +37,5 @@ export const books: Book[] = [
     coverUrl: "/covers/faith.jpg",
     pdfUrl: "/books/klendennen-revival.pdf",
   },
-  {
-    id: 3,
-    titleRu: "Изучение Библии",
-    titleEn: "Bible Study Guide",
-    authorRu: "Всеволод Абатуров",
-    authorEn: "Vsevolod Abaturov",
-    descriptionRu: "Пошаговое руководство к глубокому изучению Священного Писания и применению его в повседневной жизни.",
-    descriptionEn: "A step-by-step guide to deep Bible study and applying it to everyday life.",
-    category: "bible",
-    coverUrl: "/covers/bible.jpg",
-    pdfUrl: "/books/bible-study.pdf",
-  },
-  {
-    id: 4,
-    titleRu: "Христианская жизнь",
-    titleEn: "Christian Living",
-    authorRu: "Олег Абатуров",
-    authorEn: "Oleg Abaturov",
-    descriptionRu: "Как жить по Слову Божьему каждый день. Практические советы для духовного роста.",
-    descriptionEn: "How to live by God's Word every day. Practical advice for spiritual growth.",
-    category: "christianLife",
-    coverUrl: "/covers/life.jpg",
-    pdfUrl: "/books/christian-life.pdf",
-  },
+  
 ];
