@@ -23,7 +23,7 @@ export const books: Book[] = [
     descriptionEn: "Kenneth E. Hagin shows from the Bible how a person receives the baptism of the Holy Spirit.",
     category: "faith",
     coverUrl: "/covers/prayer.jpg",
-    pdfUrl: "/books/hagin-holy-spirit.pdf",
+    externalUrl: "https://drive.google.com/uc?export=download&id=1AybJbTIm992FQf7KgOlZJTriXpcLeKrB",
   },
 
   {    id: 2,
@@ -35,7 +35,7 @@ export const books: Book[] = [
     descriptionEn: "A book about returning to the original experience of the early church and the power of the Holy Spirit.",
     category: "christianLife",
     coverUrl: "/covers/faith.jpg",
-    pdfUrl: "/books/klendennen-revival.pdf",
+    externalUrl: "https://drive.google.com/uc?export=download&id=1Ftd1VsplGiTPt5MitfEkLAWQ0ATVdaf5",
   },
   
 ];
