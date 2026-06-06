@@ -8,6 +8,12 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedChannel, setSelectedChannel] = useState("whatsapp");
   const [currentSlide, setCurrentSlide] = useState(0);
+    useEffect(() => {
+    const handleScroll = () => setShowScrollTop(window.scrollY > 500);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev === 3 ? 0 : prev + 1));
@@ -25,6 +31,7 @@ export default function Home() {
 
   // Чат-виджет
   const [chatOpen, setChatOpen] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const [prayerName, setPrayerName] = useState("");
   const [prayerText, setPrayerText] = useState("");
   const [prayerAnonymous, setPrayerAnonymous] = useState(false);
@@ -319,7 +326,7 @@ export default function Home() {
           </div>
           <button onClick={() => setCurrentSlide(currentSlide === 0 ? 3 : currentSlide - 1)} style={{ position: "absolute", top: "50%", left: 10, transform: "translateY(-50%)", backgroundColor: "rgba(0,0,0,0.6)", color: "#d4af37", border: "1px solid #d4af37", borderRadius: "50%", width: 44, height: 44, fontSize: 20, cursor: "pointer" }}>&#8592;</button>
           <button onClick={() => setCurrentSlide(currentSlide === 3 ? 0 : currentSlide + 1)} style={{ position: "absolute",
-top: "50%", right: 10, transform: "translateY(-50%)", backgroundColor: "rgba(0,0,0,0.6)", color: "#d4af37", border: "1px solid #d4af37", borderRadius: "50%", width: 44, height: 44, fontSize: 20, cursor: "pointer" }}>→ </button>
+    top: "50%", right: 10, transform: "translateY(-50%)", backgroundColor: "rgba(0,0,0,0.6)", color: "#d4af37", border: "1px solid #d4af37", borderRadius: "50%", width: 44, height: 44, fontSize: 20, cursor: "pointer" }}>→ </button>
           <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 15 }}>
             {[0, 1, 2, 3].map((i) => (
               <button key={i} onClick={() => setCurrentSlide(i)} style={{ width: currentSlide === i ? 24 : 10, height: 10, borderRadius: 5, backgroundColor: currentSlide === i ? "#d4af37" : "#333", border: "none", cursor: "pointer", transition: "0.3s" }} />
@@ -665,6 +672,54 @@ top: "50%", right: 10, transform: "translateY(-50%)", backgroundColor: "rgba(0,0
         </div>
       )}
 
+      {/* КНОПКА НАВЕРХ */}
+      {showScrollTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          style={{
+            position: "fixed",
+            bottom: 30,
+            right: 30,
+            zIndex: 999,
+            width: 50,
+            height: 50,
+            borderRadius: "50%",
+            backgroundColor: "rgba(229, 57, 53, 0.85)",
+            color: "#fff",
+            border: "none",
+            fontSize: 22,
+            cursor: "pointer",
+            boxShadow: "0 4px 15px rgba(229, 57, 53, 0.4)",
+          }}
+          title="Наверх"
+        >
+          ↑
+        </button>
+      )}
+      {/* КНОПКА НАВЕРХ */}
+      {showScrollTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          style={{
+            position: "fixed",
+            bottom: 30,
+            right: 30,
+            zIndex: 999,
+            width: 50,
+            height: 50,
+            borderRadius: "50%",
+            backgroundColor: "rgba(229, 57, 53, 0.85)",
+            color: "#fff",
+            border: "none",
+            fontSize: 22,
+            cursor: "pointer",
+            boxShadow: "0 4px 15px rgba(229, 57, 53, 0.4)",
+          }}
+          title="Наверх"
+        >
+          ↑
+        </button>
+      )}
       </div>
   );
 }
