@@ -317,9 +317,18 @@ export default function Home() {
         <div style={{ maxWidth: 1400, margin: "0 auto", position: "relative" }}>
           <div style={{ overflow: "hidden", borderRadius: 12, border: "1px solid #222" }}>
             <div style={{ display: "flex", transition: "transform 0.5s ease", transform: `translateX(-${currentSlide * 100}%)` }}>
-              {["/mission1.jpg", "/mission2.jpg", "/mission3.jpg", "/mission4.jpg"].map((src, i) => (
+              {[
+                  { src: "/mission1.jpg", title: "Благодать", subtitle: "Божья сила в нашей жизни" },
+                  { src: "/mission2.jpg", title: "Исцеление", subtitle: "Иисус исцеляет сегодня" },
+                  { src: "/mission3.jpg", title: "Единство", subtitle: "Одно тело во Христе" },
+                  { src: "/mission4.jpg", title: "Поклонение", subtitle: "Вход в присутствие Божье" },
+                ].map((slide, i) => (
                 <div key={i} style={{ minWidth: "100%", position: "relative" }}>
-                  <img src={src} alt={`Mission ${i + 1}`} style={{ width: "100%", height: 600, objectFit: "cover" }} />
+                  <img src={slide.src} alt={`Mission ${i + 1}`} style={{ width: "100%", height: 600, objectFit: "cover" }} />
+                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "30px 20px", background: "linear-gradient(transparent, rgba(0,0,0,0.8))" }}>
+                    <h3 style={{ color: "#d4af37", fontSize: 28, fontWeight: 800, margin: "0 0 5px 0" }}>{slide.title}</h3>
+                    <p style={{ color: "#ccc", fontSize: 16, margin: 0 }}>{slide.subtitle}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -569,18 +578,48 @@ export default function Home() {
       </section>
 
       {/* SCRIPTURE */}
-      <section style={{
-        padding: "60px 20px", backgroundColor: "#0d0d0d",
-        background: "linear-gradient(135deg, #0d0d0d 0%, #1a1a0a 100%)"
+            <section id="scripture" style={{
+        position: "relative",
+        padding: "120px 20px",
+        backgroundImage: "url('/images/scripture-bg.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+        minHeight: 500,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}>
-        <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+        }} />
+        <div style={{
+          position: "relative",
+          zIndex: 1,
+          maxWidth: 900,
+          textAlign: "center",
+        }}>
+          <div style={{ fontSize: 48, color: "#d4af37", marginBottom: 20 }}>&#10022;</div>
           <blockquote style={{
-            color: "#d4af37", fontSize: "clamp(1.1rem, 2.5vw, 1.4rem)",
-            fontStyle: "italic", lineHeight: 1.8, marginBottom: 15
+            fontSize: 28,
+            color: "#fff",
+            fontStyle: "italic",
+            lineHeight: 1.6,
+            margin: "0 0 20px 0",
+            fontWeight: 300,
           }}>
-            &ldquo;{t.scripture.quote}&rdquo;
+            {t.scripture.quote}
           </blockquote>
-          <cite style={{ color: "#888", fontSize: 14 }}>— {t.scripture.source}</cite>
+          <cite style={{
+            fontSize: 18,
+            color: "#d4af37",
+            fontStyle: "normal",
+            fontWeight: 600,
+          }}>
+            {t.scripture.source}
+          </cite>
         </div>
       </section>
 
