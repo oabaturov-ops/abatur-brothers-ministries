@@ -32,23 +32,18 @@ export default function Home() {
   // Чат-виджет
   const [chatOpen, setChatOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [prayerName, setPrayerName] = useState("");
-  const [prayerText, setPrayerText] = useState("");
-  const [prayerAnonymous, setPrayerAnonymous] = useState(false);
-  const [prayerStatus, setPrayerStatus] = useState("idle");
   const [chatName, setChatName] = useState("");
   const [chatMsg, setChatMsg] = useState("");
   const [chatStatus, setChatStatus] = useState("idle");
 
     const navLinks = [
     { href: "/", label: t.nav.home },
-    { href: "#prayer", label: t.nav.prayer },
+    { href: "#project", label: t.nav.project },
     { href: "#about", label: t.nav.about },
     { href: "#events", label: t.nav.events },
     { href: "#team", label: t.nav.team },
     { href: "#mission", label: t.nav.mission },
     { href: "#contacts", label: t.nav.contacts },
-    { href: "#comments", label: t.nav.comments },
     { href: "/blog", label: t.nav.blog },
     { href: "/library", label: t.nav.library },
   ];
@@ -92,34 +87,7 @@ export default function Home() {
     setTimeout(() => setChatStatus("idle"), 3000);
   }
 
-  async function sendPrayerRequest() {
-    if (!prayerText.trim()) return;
-    setPrayerStatus("sending");
-    try {
-      const res = await fetch("/api/telegram", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: prayerAnonymous ? "Аноним" : prayerName,
-          message: `[МОЛИТВЕННАЯ НУЖДА]\n${prayerText}`,
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setPrayerStatus("success");
-        setPrayerName("");
-        setPrayerText("");
-        setPrayerAnonymous(false);
-      } else {
-        setPrayerStatus("error");
-      }
-    } catch {
-      setPrayerStatus("error");
-    }
-    setTimeout(() => setPrayerStatus("idle"), 4000);
-  }
-
-  return (
+    return (
     <div style={{ backgroundColor: "#0a0a0a", color: "#fff", minHeight: "100vh" }}>
       {/* NAVIGATION */}
             <nav style={{
@@ -244,6 +212,26 @@ export default function Home() {
           }}>{t.hero.cta2}</a>
         </div>
       </section>
+{/* TEAM */}
+      <section id="team" style={{ padding: "80px 20px", maxWidth: 700, margin: "0 auto" }}>
+        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 50 }}>{t.team.heading}</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 20}}>
+          {t.team.members.map((member: any, index: number) => (
+            <div key={member.name} style={{
+              backgroundColor: "#111", border: "1px solid #222", borderRadius: 12,
+              padding: "30px", textAlign: "center"
+            }}>
+              <img src={`/founder${index + 1}.jpg`} alt={member.name} style={{
+                width: "100%", height: 300, objectFit: "cover",
+                borderRadius: "12px 12px 0 0", marginBottom: 15
+              }} />
+              <h3 style={{ color: "#d4af37", marginBottom: 5 }}>{member.name}</h3>
+              <p style={{ color: "#888", fontSize: 16, marginBottom: 10 }}>{member.role}</p>
+              <p style={{ color: "#aaa", fontSize: 14, lineHeight: 1.6 }}>{member.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* ABOUT */}
       <section id="about" style={{ padding: "80px 20px", maxWidth: 650, margin: "0 auto" }}>
@@ -269,45 +257,41 @@ export default function Home() {
 
       {/* EVENTS */}
       <section id="events" style={{ padding: "80px 20px", backgroundColor: "#0d0d0d" }}>
-        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 50 }}>{t.events.heading}</h2>
-        <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 25 }}>
-          {t.events.items.map((event: any) => (
-            <div key={event.title} style={{
-              backgroundColor: "#111", border: "1px solid #222", borderRadius: 12, padding: "25px"
-            }}>
-              <span style={{ color: "#d4af37", fontSize: 13, fontWeight: "bold" }}>{event.date}</span>
-              <h3 style={{ marginTop: 10, marginBottom: 8 }}>{event.title}</h3>
-              <span style={{
-                fontSize: 12, padding: "4px 10px", backgroundColor: "#1a1a1a",
-                borderRadius: 20, color: "#888", border: "1px solid #333"
-              }}>{event.tag}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* TEAM */}
-      <section id="team" style={{ padding: "200px 20px", maxWidth: 700, margin: "0 auto" }}>
-        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 50 }}>{t.team.heading}</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 20}}>
-          {t.team.members.map((member: any, index: number) => (
-            <div key={member.name} style={{
+        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 15 }}>{t.events.heading}</h2>
+        <p style={{ textAlign: "center", color: "#888", marginBottom: 40, maxWidth: 600, margin: "0 auto 40px", lineHeight: 1.6 }}>{t.events.subtitle}</p>
+        <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 25 }}>
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <div key={n} style={{
               backgroundColor: "#111", border: "1px solid #222", borderRadius: 12,
-              padding: "30px", textAlign: "center"
+              overflow: "hidden"
             }}>
-              <img src={`/founder${index + 1}.jpg`} alt={member.name} style={{
-                width: "100%", height: 300, objectFit: "cover",
-                borderRadius: "12px 12px 0 0", marginBottom: 15
-              }} />
-              <h3 style={{ color: "#d4af37", marginBottom: 5 }}>{member.name}</h3>
-              <p style={{ color: "#888", fontSize: 16, marginBottom: 10 }}>{member.role}</p>
-              <p style={{ color: "#aaa", fontSize: 14, lineHeight: 1.6 }}>{member.desc}</p>
+              <div style={{
+                width: "100%", height: 280, backgroundColor: "#1a1a1a",
+                display: "flex", alignItems: "center", justifyContent: "center"
+              }}>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{
+                    width: 80, height: 80, borderRadius: "50%", backgroundColor: "#252525",
+                    margin: "0 auto 12px", display: "flex", alignItems: "center", justifyContent: "center"
+                  }}>
+                    <span style={{ fontSize: 36, color: "#555" }}>&#9679;</span>
+                  </div>
+                  <p style={{ color: "#555", fontSize: 13, margin: 0 }}>
+                    {lang === "ru" ? "\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C \u0444\u043E\u0442\u043E" : "Add photo"}
+                  </p>
+                </div>
+              </div>
+              <div style={{ padding: "15px", textAlign: "center" }}>
+                <p style={{ color: "#555", fontSize: 14, margin: 0 }}>
+                  {lang === "ru" ? "\u0418\u043C\u044F \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u0430" : "Member name"}
+                </p>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-            {/* MISSION */}
+      {/* MISSION */}
       <section id="mission" style={{ padding: "80px 20px", backgroundColor: "#0d0d0d" }}>
         <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 20 }}>{t.mission.heading}</h2>
         <p style={{ color: "#ccc", lineHeight: 1.8, textAlign: "center", marginBottom: 30, maxWidth: 800, margin: "0 auto 30px" }}>
@@ -537,44 +521,30 @@ export default function Home() {
       </section>
 
 {/* PRAYER REQUEST */}
-      <section id="prayer" style={{ padding: "80px 20px", backgroundColor: "#0d0d0d" }}>
-        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 15 }}>{t.prayerRequest.title}</h2>
-        <p style={{ textAlign: "center", color: "#888", marginBottom: 30, maxWidth: 600, margin: "0 auto 30px" }}>{t.prayerRequest.subtitle}</p>
-        <form onSubmit={(e) => { e.preventDefault(); sendPrayerRequest(); }} style={{ maxWidth: 500, margin: "0 auto" }}>
-          {!prayerAnonymous && (
-            <input
-              type="text"
-              placeholder={t.prayerRequest.namePlaceholder}
-              value={prayerName}
-              onChange={(e: any) => setPrayerName(e.target.value)}
-              style={{ width: "100%", padding: "12px 14px", backgroundColor: "#111", border: "1px solid #333", borderRadius: 8, color: "#fff", fontSize: 14, marginBottom: 12, outline: "none" }}
-            />
-          )}
-          <textarea
-            placeholder={t.prayerRequest.requestPlaceholder}
-            value={prayerText}
-            onChange={(e: any) => setPrayerText(e.target.value)}
-            rows={4}
-            style={{ width: "100%", padding: "12px 14px", backgroundColor: "#111", border: "1px solid #333", borderRadius: 8, color: "#fff", fontSize: 14, marginBottom: 12, outline: "none", resize: "vertical", fontFamily: "inherit" }}
-          />
-          <label style={{ display: "flex", alignItems: "center", gap: 8, color: "#888", fontSize: 13, marginBottom: 16, cursor: "pointer" }}>
-            <input type="checkbox" checked={prayerAnonymous} onChange={(e: any) => setPrayerAnonymous(e.target.checked)} style={{ accentColor: "#d4af37" }} />
-            {t.prayerRequest.anonymous}
-          </label>
-          {prayerStatus === "success" && (
-            <p style={{ color: "#4ade80", marginBottom: 12, fontSize: 14 }}>{t.prayerRequest.success}</p>
-          )}
-          {prayerStatus === "error" && (
-            <p style={{ color: "#f87171", marginBottom: 12, fontSize: 14 }}>{t.prayerRequest.error}</p>
-          )}
-          <button type="submit" disabled={prayerStatus === "sending"} style={{
-            width: "100%", padding: "14px", backgroundColor: "#d4af37", color: "#000",
-            border: "none", borderRadius: 8, fontWeight: "bold", fontSize: 15,
-            cursor: "pointer", transition: "0.3s"
+      <section id="project" style={{ padding: "80px 20px", backgroundColor: "#0d0d0d" }}>
+        <h2 style={{ textAlign: "center", color: "#d4af37", fontSize: 32, marginBottom: 10 }}>{t.disabilityProject.title}</h2>
+        <p style={{ textAlign: "center", color: "#888", marginBottom: 40, maxWidth: 700, margin: "0 auto 40px", lineHeight: 1.7 }}>{t.disabilityProject.subtitle}</p>
+        <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}>
+          {t.disabilityProject.features.map((feature: string, i: number) => (
+            <div key={i} style={{
+              backgroundColor: "#111", borderRadius: 12, padding: "24px",
+              border: "1px solid #222", transition: "0.3s"
+            }}>
+              <div style={{ fontSize: 28, marginBottom: 12, color: "#d4af37" }}>{t.disabilityProject.featureIcons[i]}</div>
+              <h3 style={{ color: "#fff", fontSize: 18, marginBottom: 8 }}>{feature}</h3>
+              <p style={{ color: "#888", fontSize: 14, lineHeight: 1.6 }}>{t.disabilityProject.featureDescs[i]}</p>
+            </div>
+          ))}
+        </div>
+        <div style={{ textAlign: "center", marginTop: 40 }}>
+          <a href={t.disabilityProject.memorandumUrl} target="_blank" rel="noopener noreferrer" style={{
+            display: "inline-block", padding: "14px 36px", backgroundColor: "#d4af37",
+            color: "#000", fontWeight: "bold", fontSize: 16, borderRadius: 8,
+            textDecoration: "none", transition: "0.3s"
           }}>
-            {prayerStatus === "sending" ? t.prayerRequest.sending : t.prayerRequest.submit}
-          </button>
-        </form>
+            {t.disabilityProject.readMore}
+          </a>
+        </div>
       </section>
 
       {/* SCRIPTURE */}

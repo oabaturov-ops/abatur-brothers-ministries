@@ -3,6 +3,7 @@
 import { useLanguage } from "@/lib/LanguageContext";
 import { posts } from "@/data/posts";
 import Link from "next/link";
+import Comments from "@/components/Comments";
 import { useParams } from "next/navigation";
 
 export default function BlogPostPage() {
@@ -106,6 +107,8 @@ export default function BlogPostPage() {
             Facebook
           </a>
         </div>
+
+        <Comments slug={slug} />
       </div>
     </div>
   );

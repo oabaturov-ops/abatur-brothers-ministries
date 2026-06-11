@@ -6,11 +6,10 @@ export const translations = {
       brand: "ABATUR MINISTRIES",
       about: "О нас",
       blog: "Блог",
-      events: "События",
-      team: "Команда",
+      events: "Наша команда",
+      team: "Основатели служения",
       mission: "Миссия",
       contacts: "Контакты",
-      comments: "Комментарии",
       home: "Главная",
       library: "Библиотека",
       prayer: "Молитва",
@@ -42,16 +41,11 @@ export const translations = {
       },
     },
     events: {
-      heading: "События",
-      items: [
-        { date: "15 июня", title: "Вечер молитвы", tag: "Молитва" },
-        { date: "26 июня", title: "Презентация книги", tag: "Книги" },
-        { date: "29 июня", title: "Библейское изучение", tag: "Обучение" },
-        { date: "17 июля", title: "Онлайн-общение", tag: "Онлайн" },
-      ],
+      heading: "Наша команда",
+      subtitle: "Наша команда служителей",
     },
     team: {
-      heading: "Наша команда",
+      heading: "Основатели служения",
       members: [
         {
           name: "Всеволод Абатуров",
@@ -67,7 +61,7 @@ export const translations = {
     },
     mission: {
       heading: "Наша миссия",
-      text: "Наша миссия — нести свет Евангелия каждому сердцу, строить крепкую веру и поддерживать друг друга на пути служения.",
+      text: "Наша миссия — нести свет Евангелия для инвалидов через инвалидов, для лидеров через лидеров, для всех через всех. Каждому вернуть его голос и его имя.",
       items: [
         "Проповедь Слова Божьего",
         "Молитвенная поддержка",
@@ -125,6 +119,7 @@ export const translations = {
       categories: "Категории",
       all: "Все",
       prayer: "Молитва",
+      project: "Проект",
       faith: "Вера",
       bible: "Библия",
       christianLife: "Христианская жизнь",
@@ -133,21 +128,35 @@ export const translations = {
       download: "Скачать PDF",
       readMore: "Подробнее",
     },
-        prayerRequest: {
-      title: "Молитвенная нужда",
-      subtitle: "Поделитесь своей молитвенной нуждой — мы будем молиться за вас",
-      namePlaceholder: "Ваше имя",
-      requestPlaceholder: "Опишите вашу молитвенную нужду",
-      anonymous: "Отправить анонимно",
-      submit: "Отправить просьбу",
-      sending: "Отправка...",
-      success: "Ваша просьба отправлена. Мы будем молиться за вас!",
-      error: "Ошибка отправки. Попробуйте позже.",
-    },
+    
     scripture: {
       quote: "Ибо где двое или трое собраны во имя Моё, там Я посреди них.",
       source: "Матфея 18:20",
     },
+    disabilityProject: {
+      title: "\u041F\u0440\u043E\u0435\u043A\u0442 \u0434\u043B\u044F \u0438\u043D\u0432\u0430\u043B\u0438\u0434\u043E\u0432",
+      subtitle: "\u041C\u044B \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u043C \u043D\u0430\u0434 \u0441\u043E\u0437\u0434\u0430\u043D\u0438\u0435\u043C \u043C\u0438\u043D\u0438-\u0433\u043E\u0440\u043E\u0434\u043A\u0430 \u0434\u043B\u044F \u043B\u044E\u0434\u0435\u0439 \u0441 \u0438\u043D\u0432\u0430\u043B\u0438\u0434\u043D\u043E\u0441\u0442\u044C\u044E \u2014 \u0431\u0435\u0437\u043E\u043F\u0430\u0441\u043D\u043E\u0439 \u0441\u0440\u0435\u0434\u044B, \u0433\u0434\u0435 \u043A\u0430\u0436\u0434\u044B\u0439 \u043C\u043E\u0436\u0435\u0442 \u0436\u0438\u0442\u044C, \u0440\u0430\u0431\u043E\u0442\u0430\u0442\u044C \u0438 \u0440\u0430\u0437\u0432\u0438\u0432\u0430\u0442\u044C\u0441\u044F.",
+      features: [
+        "\u0416\u0438\u043B\u044C\u0451 \u0438 \u0431\u044B\u0442",
+        "\u041E\u0431\u0440\u0430\u0437\u043E\u0432\u0430\u043D\u0438\u0435",
+        "\u041C\u0435\u0434\u0438\u0446\u0438\u043D\u0441\u043A\u0438\u0439 \u0446\u0435\u043D\u0442\u0440",
+        "\u0422\u0440\u0443\u0434\u043E\u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u043E",
+        "\u0421\u043E\u0446\u0438\u0430\u043B\u044C\u043D\u0430\u044F \u0438\u043D\u0442\u0435\u0433\u0440\u0430\u0446\u0438\u044F",
+        "\u042D\u043A\u043E\u043B\u043E\u0433\u0438\u0447\u043D\u0430\u044F \u0441\u0440\u0435\u0434\u0430"
+      ],
+      featureIcons: ["\u2302", "\u2728", "\u2665", "\u2692", "\u2764", "\u2618"],
+      featureDescs: [
+        "\u0410\u0434\u0430\u043F\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u044B\u0435 \u043A\u0432\u0430\u0440\u0442\u0438\u0440\u044B \u0438 \u0434\u043E\u043C\u0430 \u0434\u043B\u044F \u043A\u043E\u043C\u0444\u043E\u0440\u0442\u043D\u043E\u0433\u043E \u043F\u0440\u043E\u0436\u0438\u0432\u0430\u043D\u0438\u044F \u0441 \u043F\u043E\u043B\u043D\u043E\u0439 \u0434\u043E\u0441\u0442\u0443\u043F\u043D\u043E\u0439 \u0441\u0440\u0435\u0434\u043E\u0439.",
+        "\u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435 \u043D\u043E\u0432\u044B\u043C \u043F\u0440\u043E\u0444\u0435\u0441\u0441\u0438\u044F\u043C, \u043A\u0443\u0440\u0441\u044B \u0440\u0435\u0430\u0431\u0438\u043B\u0438\u0442\u0430\u0446\u0438\u0438 \u0438 \u0440\u0430\u0437\u0432\u0438\u0442\u0438\u044F \u0442\u0432\u043E\u0440\u0447\u0435\u0441\u043A\u0438\u0445 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439.",
+        "\u0421\u043E\u0432\u0440\u0435\u043C\u0435\u043D\u043D\u043E\u0435 \u043E\u0431\u043E\u0440\u0443\u0434\u043E\u0432\u0430\u043D\u0438\u0435, \u0440\u0435\u0430\u0431\u0438\u043B\u0438\u0442\u0430\u0446\u0438\u044F \u0438 \u043F\u043E\u0432\u0441\u0435\u0434\u043D\u0435\u0432\u043D\u0430\u044F \u043C\u0435\u0434\u0438\u0446\u0438\u043D\u0441\u043A\u0430\u044F \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430.",
+        "\u041C\u0430\u0441\u0442\u0435\u0440\u0441\u043A\u0438\u0435, \u0446\u0435\u0445\u0430 \u0438 \u0443\u0434\u0430\u043B\u0451\u043D\u043D\u0430\u044F \u0440\u0430\u0431\u043E\u0442\u0430 \u0434\u043B\u044F \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u043E\u0439 \u043D\u0435\u0437\u0430\u0432\u0438\u0441\u0438\u043C\u043E\u0441\u0442\u0438.",
+        "\u041A\u043E\u043C\u043C\u0443\u043D\u0430\u043B\u044C\u043D\u044B\u0435 \u043F\u0440\u043E\u0441\u0442\u0440\u0430\u043D\u0441\u0442\u0432\u0430, \u043C\u0435\u0440\u043E\u043F\u0440\u0438\u044F\u0442\u0438\u044F \u0438 \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430 \u043E\u0434\u043D\u043E\u043F\u043E\u043B\u0443\u0447\u0430\u043D.",
+        "\u0417\u0435\u043B\u0451\u043D\u044B\u0435 \u0437\u043E\u043D\u044B, \u043F\u0430\u0440\u043A\u0438 \u0438 \u044D\u043A\u043E\u043B\u043E\u0433\u0438\u0447\u043D\u043E \u0447\u0438\u0441\u0442\u0430\u044F \u0442\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u044F \u0434\u043B\u044F \u043E\u0442\u0434\u044B\u0445\u0430 \u0438 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F."
+      ],
+      readMore: "\u041F\u043E\u0434\u0440\u043E\u0431\u043D\u0435\u0435 (\u043C\u0435\u043C\u043E\u0440\u0430\u043D\u0434\u0443\u043C)",
+      memorandumUrl: "#"
+    },
+
     footer: "© 2026 Abatur Brothers Ministries. Все права защищены.",
   },
 
@@ -156,14 +165,13 @@ export const translations = {
       brand: "ABATUR MINISTRIES",
       about: "About",
       blog: "Blog",
-      events: "Events",
-      team: "Team",
+      events: "Our team",
+      team: "Ministry Founders",
       mission: "Mission",
       contacts: "Contacts",
-      comments: "Comments",
       home: "Home",
       library: "Library",
-      prayer: "Prayer",
+      project: "Project",
     },
     hero: {
       title1: "Abatur Brothers",
@@ -192,15 +200,11 @@ export const translations = {
       },
     },
     events: {
-      heading: "Events",
-      items: [
-        { date: "June 15", title: "Prayer Evening", tag: "Prayer" },
-        { date: "June 26", title: "Book presentation", tag: "Book" },
-        { date: "June 29", title: "Bible Study", tag: "Study" },
-      ],
+      heading: "Our Team",
+      subtitle: "Our Ministry Team",
     },
     team: {
-      heading: "Our Team",
+      heading: "Ministry Founders",
       members: [
         {
           name: "Vsevolod Abaturov",
@@ -216,7 +220,7 @@ export const translations = {
     },
     mission: {
       heading: "Our Mission",
-      text: "Our mission is to bring the light of the Gospel to every heart, build strong faith, and support each other on the path of ministry.",
+      text: "Our mission is to bring the light of the Gospel to the disabled through the disabled, to leaders through leaders, to everyone through everyone. To restore each person's voice and their name.",
       items: [
         "Preaching the Word of God",
         "Prayer support",
@@ -297,6 +301,30 @@ export const translations = {
       quote: "For where two or three gather in my name, there am I with them.",
       source: "Matthew 18:20",
     },
+      disabilityProject: {
+      title: "Disability Project",
+      subtitle: "We are working on creating a mini-town for people with disabilities \u2014 a safe environment where everyone can live, work, and thrive.",
+      features: [
+        "Housing & Living",
+        "Education",
+        "Medical Center",
+        "Employment",
+        "Social Integration",
+        "Eco Environment"
+      ],
+      featureIcons: ["\u2302", "\u2728", "\u2665", "\u2692", "\u2764", "\u2618"],
+      featureDescs: [
+        "Adapted apartments and homes for comfortable living with full accessible environment.",
+        "Training for new professions, rehabilitation courses, and creative skills development.",
+        "Modern equipment, rehabilitation, and daily medical support.",
+        "Workshops, workshops, and remote work for economic independence.",
+        "Community spaces, events, and peer support.",
+        "Green zones, parks, and an eco-clean territory for rest and health."
+      ],
+      readMore: "Read More (Memorandum)",
+      memorandumUrl: "#"
+    },
+
     footer: "© 2026 Abatur Brothers Ministries. All rights reserved.",
   },
 };
