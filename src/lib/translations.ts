@@ -12,7 +12,7 @@ export const translations = {
       contacts: "Контакты",
       home: "Главная",
       library: "Библиотека",
-      prayer: "Молитва",
+      project: "Проект",
     },
     hero: {
       title1: "Abatur Brothers",
@@ -278,6 +278,7 @@ export const translations = {
       categories: "Categories",
       all: "All",
       prayer: "Prayer",
+      project: "Project",
       faith: "Faith",
       bible: "Bible",
       christianLife: "Christian Life",

@@ -110,8 +110,8 @@ export default function Library() {
 
                 {/* Кнопки */}
                 <div style={{ display: "flex", gap: 8 }}>
-                  {book.pdfUrl && (
-                    <a href={book.pdfUrl}
+                  {book.externalUrl && (
+                    <a href={book.externalUrl}
                       style={{
                         flex: 1, textAlign: "center", padding: "9px 0",
                         backgroundColor: "#fbbf24", color: "#0a0f1a",

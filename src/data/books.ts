@@ -8,6 +8,7 @@ export interface Book {
   descriptionEn: string;
   externalUrl: string;
   coverUrl: string;
+  category?: string;
 }
 
 
