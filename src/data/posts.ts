@@ -72,5 +72,20 @@ Wisdom spoken by a man who walked the path of sorrow. Not because he was a murde
     categoryRu: "Откровения",
     categoryEn: "Revelations",
     readTime: "15 мин"
-  }
+  },
+  {
+    id: 5,
+    slug: "dreams-gods-parables",
+    titleRu: "Сновидения. Божьи притчи",
+    titleEn: "Dreams. God's Parables",
+    excerptRu: "О чём говорит Бог в сновидениях",
+    excerptEn: "What does God say in dreams?",
+    contentRu: `А вам снятся сны? Каламбур, скажете вы. Но мы иногда так говорим. Видите ли вы сновидения во время сна? Сновидение, которое даёт Бог людям - это притча. Притча - это истина в картинах и образах. Иисус всегда применял этот способ, описывая то, что обычными словами описать нельзя. Он рассказывал о Царстве Небесном притчами, осознавая, что ученики не поймут его, если он будет им рассказывать, говоря об этом в повествовательной форме. Как рассказать туземцу, живущему в джунглях, о космическом корабле? Только дав ему образ этой ракеты, сравнив это, допустим, с полётом стрелы из лука вверх, но только больших размеров.\n\nЛишь немногие могут воспринять и понять абстрактные идеи; большинство же людей мыслит образами и картинами. "Притча начинается с вещей, понятных каждому из его собственного опыта, а потом ведет к вещам, ему непонятным и открывает глаза на то, чего он до сих пор не видел, собственно, не мог видеть.\n\nПритча открывает человеку ум и глаза, начиная с того, где он находится, и что он знает, и ведет его туда, где он должен быть... А притча как раз и есть истина, запечатленная в рассказе. "Земная история с небесным смыслом" - это самое простое определение притчи. Люди будут слушать и их внимание можно привлечь лишь, если заинтересовать их; в простых людях интерес можно разбудить рассказами, а притча и есть такой рассказ (Комментарии Баркли к Новому Завету. Ев. Матфея, гл.13). В образах, понятным человеку, Господь открывает сновидцу истинное положение вещей или открывает ему будущее или вдохновляет его на что-то или утешает или очищает.`,
+    contentEn: `Do you dream? A pun, you say. But we sometimes say that. Do you dream while you sleep? The dream God gives people is a parable. A parable is truth in pictures and images. Jesus always used this method, describing what cannot be described in ordinary words. He spoke about the Kingdom of Heaven in parables, realizing that his disciples would not understand him if he told them about it in narrative form. How can you tell a native living in the jungle about a spaceship? Only by giving him an image of this rocket, comparing it, say, to the flight of an arrow from a bow upward, but only larger. Only a few can perceive and understand abstract ideas; most people think in images and pictures. "A parable begins with things that everyone understands from his own experience, and then leads on to things that are incomprehensible to him, and opens his eyes to what he has not seen before, in fact, could not see. A parable opens a person's mind and eyes, beginning with where he is and what he knows, and leads him to where he should be... And a parable is precisely the truth captured in a story. "An earthly story with a heavenly meaning" is the simplest definition of a parable. People will listen and their attention can be attracted only if they are interested; in ordinary people, interest can be awakened by stories, and a parable is such a story (Barclay's Commentary on the New Testament. Matthew, Chapter 13). In images understandable to man, the Lord reveals to the dreamer the true state of affairs, or reveals to him the future, or inspires him to do something, or comforts or purifies.`,
+    date: "2026-06-15",
+    categoryRu: "Сны",
+    categoryEn: "Dreams",
+    readTime: "5 мин",
+  },
+
 ];
