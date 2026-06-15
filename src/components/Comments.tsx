@@ -1,99 +1,127 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/lib/LanguageContext";
 
 interface Comment {
   id: number;
+  slug: string;
   name: string;
   text: string;
-  date: string;
+  created_at: string;
 }
 
 export default function Comments({ slug }: { slug: string }) {
   const { lang } = useLanguage();
-  const [comments, setComments] = useState<Comment[]>([]);
   const [name, setName] = useState("");
   const [text, setText] = useState("");
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("comments_" + slug);
-      if (saved) setComments(JSON.parse(saved));
-    } catch {}
+    fetchComments();
   }, [slug]);
 
-  const addComment = () => {
-    if (!name.trim() || !text.trim()) return;
-    const newComment = {
-      id: Date.now(),
-      name: name.trim(),
-      text: text.trim(),
-      date: new Date().toLocaleDateString(lang === "ru" ? "ru-RU" : "en-US"),
-    };
-    const updated = [newComment, ...comments];
-    setComments(updated);
-    try {
-      localStorage.setItem("comments_" + slug, JSON.stringify(updated));
-    } catch {}
-    setText("");
+  const fetchComments = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("comments")
+      .select("*")
+      .eq("slug", slug)
+      .order("created_at", { ascending: true });
+
+    if (!error && data) {
+      setComments(data);
+    }
+    setLoading(false);
   };
 
+  const addComment = async () => {
+    if (!name.trim() || !text.trim() || sending) return;
+    setSending(true);
+
+    const { error } = await supabase
+      .from("comments")
+      .insert([{ slug, name: name.trim(), text: text.trim() }]);
+
+    if (!error) {
+      setName("");
+      setText("");
+      fetchComments();
+    }
+    setSending(false);
+  };
+
+  const label = lang === "ru"
+    ? { title: "Комментарии", namePh: "Ваше имя", textPh: "Ваш комментарий", btn: "Отправить", load: "Загрузка...", empty: "Пока нет комментариев. Будьте первым!" }
+    : { title: "Comments", namePh: "Your name", textPh: "Your comment", btn: "Submit", load: "Loading...", empty: "No comments yet. Be the first!" };
+
   return (
-    <div style={{ maxWidth: 800, margin: "40px auto", padding: "0 20px" }}>
-      <h3 style={{ color: "#d4af37", marginBottom: 20, fontSize: 24 }}>
-        {lang === "ru" ? "\u041A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0438" : "Comments"}
-      </h3>
-      <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 30 }}>
+    <div style={{ marginTop: 60, padding: "40px 0", borderTop: "1px solid #222" }}>
+      <h3 style={{ color: "#d4af37", fontSize: 24, marginBottom: 30 }}>{label.title}</h3>
+
+      {loading ? (
+        <p style={{ color: "#888" }}>{label.load}</p>
+      ) : comments.length === 0 ? (
+        <p style={{ color: "#555", fontStyle: "italic", marginBottom: 30 }}>{label.empty}</p>
+      ) : (
+        <div style={{ marginBottom: 30 }}>
+          {comments.map((c) => (
+            <div key={c.id} style={{
+              background: "#111", border: "1px solid #222", borderRadius: 8,
+              padding: "16px 20px", marginBottom: 12
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                <strong style={{ color: "#d4af37", fontSize: 15 }}>{c.name}</strong>
+                <span style={{ color: "#555", fontSize: 13 }}>
+                  {new Date(c.created_at).toLocaleDateString(lang === "ru" ? "ru-RU" : "en-US", {
+                    day: "numeric", month: "long", year: "numeric"
+                  })}
+                </span>
+              </div>
+              <p style={{ color: "#ccc", fontSize: 15, lineHeight: 1.7, margin: 0 }}>{c.text}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 600 }}>
         <input
-          placeholder={lang === "ru" ? "\u0412\u0430\u0448\u0435 \u0438\u043C\u044F" : "Your name"}
           value={name}
           onChange={(e) => setName(e.target.value)}
+          placeholder={label.namePh}
           style={{
-            width: "100%", padding: "12px 14px", backgroundColor: "#111",
-            border: "1px solid #333", borderRadius: 8, color: "#fff",
-            fontSize: 14, outline: "none"
+            background: "#111", border: "1px solid #333", borderRadius: 6,
+            padding: "12px 16px", color: "#fff", fontSize: 15, outline: "none"
           }}
         />
         <textarea
-          placeholder={lang === "ru" ? "\u0412\u0430\u0448 \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0439..." : "Your comment..."}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          rows={3}
+          placeholder={label.textPh}
+          rows={4}
           style={{
-            width: "100%", padding: "12px 14px", backgroundColor: "#111",
-            border: "1px solid #333", borderRadius: 8, color: "#fff",
-            fontSize: 14, outline: "none", resize: "vertical", fontFamily: "inherit"
+            background: "#111", border: "1px solid #333", borderRadius: 6,
+            padding: "12px 16px", color: "#fff", fontSize: 15, outline: "none",
+            resize: "vertical", fontFamily: "inherit"
           }}
         />
         <button
           onClick={addComment}
+          disabled={sending || !name.trim() || !text.trim()}
           style={{
-            padding: "12px 24px", backgroundColor: "#d4af37", color: "#000",
-            border: "none", borderRadius: 8, fontWeight: "bold", fontSize: 14,
-            cursor: "pointer", alignSelf: "flex-start"
+            background: name.trim() && text.trim() ? "#d4af37" : "#333",
+            color: name.trim() && text.trim() ? "#000" : "#666",
+            border: "none", borderRadius: 6, padding: "12px 24px",
+            fontSize: 15, fontWeight: 600, cursor: name.trim() && text.trim() ? "pointer" : "not-allowed",
+            transition: "background 0.3s", alignSelf: "flex-start"
           }}
         >
-          {lang === "ru" ? "\u041E\u0442\u043F\u0440\u0430\u0432\u0438\u0442\u044C" : "Send"}
+          {sending ? "..." : label.btn}
         </button>
       </div>
-      {comments.length === 0 && (
-        <p style={{ color: "#555", textAlign: "center" }}>
-          {lang === "ru" ? "\u041F\u043E\u043A\u0430 \u043D\u0435\u0442 \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0435\u0432. \u0411\u0443\u0434\u044C\u0442\u0435 \u043F\u0435\u0440\u0432\u044B\u043C!" : "No comments yet. Be the first!"}
-        </p>
-      )}
-      {comments.map((c) => (
-        <div key={c.id} style={{
-          backgroundColor: "#111", border: "1px solid #222", borderRadius: 8,
-          padding: "16px", marginBottom: 12
-        }}>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-            <strong style={{ color: "#d4af37" }}>{c.name}</strong>
-            <span style={{ color: "#555", fontSize: 13 }}>{c.date}</span>
-          </div>
-          <p style={{ color: "#ccc", fontSize: 14, lineHeight: 1.6, margin: 0 }}>{c.text}</p>
-        </div>
-      ))}
     </div>
   );
 }
