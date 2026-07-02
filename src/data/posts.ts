@@ -87,5 +87,38 @@ Wisdom spoken by a man who walked the path of sorrow. Not because he was a murde
     categoryEn: "Dreams",
     readTime: "5 мин",
   },
+  {
+    id: 6,
+    slug: "vzglyad-boga-na-cheloveka",
+    titleRu: "Взгляд Бога на человека",
+    titleEn: "God's View of Man",
+    excerptRu: "Многоценность верующего человека на основании Писания",
+    excerptEn: "The value of a believer based on Scripture",
+    contentRu: `Так как ты дорог в очах Моих, многоценен...
 
+"Так как ты дорог в очах Моих, многоценен, и Я возлюбил тебя, то отдам других людей за тебя, и народы за душу твою. (Ис.43:4).
+
+Ценность жемчуга или алмаза или рубина и любого другого камня не определяется наличием на нём грязи или пыли. Камень от этого не теряет своей ценности, он всегда будет только дорожать. А если природный камень ещё и искусно огранили, подчёркивая тем самым его красоту — он становится ещё дороже. Жемчуг вообще создаётся из песчинки усилиями моллюска.
+
+Представьте себе, вчера это был кусок камня, называемый рубин или алмаз или маленький шарик никем не видимый на дне моря, завтра после огранки или извлечения из раковины становится ценностью в мире. Вас вчера никто не видит и не замечает, вы просто неплохой парень или девушка. Завтра Бог достаёт вас из раковины и поднимает с глубин моря или берёт и ограняет. Это естественно некомфортно, вы же привыкли находиться в стабильном, неподвижном и скрытом состоянии. Но планы Бога — явить миру вас и Он осуществляет это. Слава Иисусу!
+
+Но так получается, что уже ценный, огранённый рубин или поднятый со дна моря жемчуг падает в грязь. Как по вашему мнению, кто-то откажется этот камень после падения подобрать потому что он побывал в грязи? Я думаю не найдётся такой человек. А если даже и найдется и оставит его лежать в грязи, то найдётся тот, кто поднимет его и вымоет. Почему? Да потому что от попадания в грязь этот камень не потерял своей ЦЕННОСТИ!
+
+Христианин! Бог говорит, что ты МНОГОЦЕНЕН для Него. Если ты упал, то это вовсе не означает, что ты потерял свою ценность! Люди могут отвернуться, считая тебя падшим и навсегда грязным. Они пройдут мимо, а Бог подберёт и омоет и возьмёт Себе.`,
+    contentEn: `"As you are precious in My eyes...
+
+"Because you are precious in My sight, and I have loved you, I will give men in exchange for you, and nations in exchange for your life. (Isaiah 43:4)
+
+The value of a pearl, a diamond, a ruby, or any other stone is not determined by the presence of dirt or dust. Don't let this detract from the value of a stone; it will always increase in value. And if a natural stone is skillfully cut, thereby emphasizing its beauty, it becomes even more valuable. A pearl is actually created from a grain of sand by the efforts of a mollusk.
+
+Imagine that yesterday it was a piece of stone called a ruby, or a diamond, or a small ball of niqem, which didn't exist at the bottom of the sea; tomorrow, after the cuts or the hoards from the closets, it will acquire value in the world. Yesterday, no one sees or notices you; you are just a good guy or girl. Tomorrow, God pulls you from the shelf and lifts you from the depths of the sea, or takes you and limits you. This is naturally uncomfortable; you need to ensure a stable, fixed, and motionless position. In a hidden state. But God is to reveal His universal plans for you, and He does a little of that. Glory to Jesus!
+
+But it so happens that a valuable, cut ruby ​​or a pearl plucked from the seabed falls into the mud. How do you think anyone would reject this stone after it's fallen because it's been in the mud? I don't think anyone would. And even if they found it and left it in the mud, someone would pick it up and wash it. Why? Because being in the mud hasn't lost its VALUE!
+
+Christian! God says you are VALUED to Him. If you've fallen, that doesn't mean you've lost your value! People may turn away, thinking you're fallen and forever dirty. They'll pass you by, but God will pick you up, wash you, and take you for Himself.`,
+    date: "2026-07-02",
+    categoryRu: "Духовность",
+    categoryEn: "Spirituality",
+    readTime: "2 мин"
+  },
 ];
