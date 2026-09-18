@@ -45,7 +45,7 @@ export default function Home() {
     { href: "#mission", label: t.nav.mission },
     { href: "#contacts", label: t.nav.contacts },
     { href: "/blog", label: t.nav.blog },
-    { href: "/library", label: t.nav.library },
+    { href: "https://books.abaturministry.org", label: t.nav.library },
   ];
 
   function addComment() {
