@@ -15,7 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
-      url: "https://abaturministry.org/library",
+      url: ""https://books.abaturministry.org"",
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
