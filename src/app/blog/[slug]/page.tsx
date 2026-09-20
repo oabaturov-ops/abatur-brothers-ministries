@@ -1,7 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useLanguage } from "@/lib/LanguageContext";
-import { posts } from "@/data/posts";
+import { fetchPostBySlug, type BlogPost } from "@/lib/blog-data";
 import Link from "next/link";
 import Comments from "@/components/Comments";
 import { useParams } from "next/navigation";
@@ -10,7 +11,25 @@ export default function BlogPostPage() {
   const { lang } = useLanguage();
   const params = useParams();
   const slug = params.slug as string;
-  const post = posts.find((p) => p.slug === slug);
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!slug) return;
+    setLoading(true);
+    fetchPostBySlug(slug).then((p) => {
+      setPost(p);
+      setLoading(false);
+    });
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div style={{ backgroundColor: "#0a0a0a", color: "#fff", minHeight: "100vh", paddingTop: 120, textAlign: "center" }}>
+        <p style={{ color: "#888" }}>Загрузка…</p>
+      </div>
+    );
+  }
 
   if (!post) {
     return (
