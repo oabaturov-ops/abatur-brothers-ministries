@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/lib/LanguageContext";
+import HomeReviews from "@/components/HomeReviews";
 
 export default function Home() {
   const { lang, setLang, t } = useLanguage();
@@ -593,12 +594,21 @@ export default function Home() {
         </div>
       </section>
 
-        {/* FOOTER */}
+<HomeReviews />
+                    {/* FOOTER */}
       <footer style={{
         padding: "30px", textAlign: "center", borderTop: "1px solid #222",
         color: "#555", fontSize: 13
       }}>
         <p>{t.footer}</p>
+        <p style={{ marginTop: 12, marginBottom: 0 }}>
+          <a
+            href="/privacy"
+            style={{ color: "#888", textDecoration: "none", borderBottom: "1px dotted #666" }}
+          >
+            {lang === "ru" ? "Политика конфиденциальности" : "Privacy Policy"}
+          </a>
+        </p>
       </footer>
 
       {/* TELEGRAM CHAT WIDGET — outside all sections! */}
@@ -681,37 +691,13 @@ export default function Home() {
         </div>
       )}
 
-      {/* КНОПКА НАВЕРХ */}
+      {/* КНОПКА НАВЕРХ — одна, поднята выше кнопки чата, чтобы не перекрывать её */}
       {showScrollTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           style={{
             position: "fixed",
-            bottom: 30,
-            right: 30,
-            zIndex: 999,
-            width: 50,
-            height: 50,
-            borderRadius: "50%",
-            backgroundColor: "rgba(229, 57, 53, 0.85)",
-            color: "#fff",
-            border: "none",
-            fontSize: 22,
-            cursor: "pointer",
-            boxShadow: "0 4px 15px rgba(229, 57, 53, 0.4)",
-          }}
-          title="Наверх"
-        >
-          ↑
-        </button>
-      )}
-      {/* КНОПКА НАВЕРХ */}
-      {showScrollTop && (
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          style={{
-            position: "fixed",
-            bottom: 30,
+            bottom: 95,
             right: 30,
             zIndex: 999,
             width: 50,
