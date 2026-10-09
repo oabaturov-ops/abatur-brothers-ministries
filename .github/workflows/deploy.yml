@@ -1,0 +1,23 @@
+name: Deploy ministry
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to web-1
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          command_timeout: 30m
+          script: |
+            cd ~/ministry
+            git pull
+            docker build -t ministry .
+            docker rm -f ministry
+            docker run -d --name ministry --network web --restart unless-stopped ministry
