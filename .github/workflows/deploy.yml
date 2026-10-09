@@ -16,8 +16,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           command_timeout: 30m
           script: |
+            set -e
             cd ~/ministry
             git pull
             docker build -t ministry .
             docker rm -f ministry
             docker run -d --name ministry --network web --restart unless-stopped ministry
+            docker image prune -f
